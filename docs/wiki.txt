@@ -1,0 +1,35 @@
+# Entities
+    - program as a whole consisted of commands
+    - program is executed on cores
+    - every core reads whole program
+    - 1 dst px per 1 core
+    - what is our caching strategy?
+
+# Algorithm
+    1. slice & cache
+    1. every core needs:
+        1. neihbour src pixels, dx, dy
+        1. whole prog
+        1. write access to dst ROI
+        1. info about dst & src pos
+
+# Commands
+    1. blit - algoritam
+    1. stretch-blit - algoritam
+    1. src - rule
+    1. src-over - rule
+
+
+# Functional tests
+    - surface to image
+    - dummy blit
+    - dummy dummy stretch blit
+    - dummy command reader
+    - parallel command reader
+    - parallel command executor
+    - porter duff
+    - gravity
+    - finished float point
+    - move to fixed point
+
+# unit tests
