@@ -34,3 +34,6 @@ target_link_libraries(test_runner ${GTEST_LIBRARIES} pthread)
 
 add_executable(playground tests/playground.cpp)
 target_link_libraries(playground)
+
+#### tools ####
+add_executable(simulator src/simulator.cpp)

@@ -1,6 +1,8 @@
 #ifndef GPULP_UTILS_H
 #define GPULP_UTILS_H
 
+#include <string>
+
 namespace gpulp {
 struct Location{
     int x;
