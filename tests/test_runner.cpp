@@ -1,6 +1,8 @@
 #include <iostream>
 #include "gtest/gtest.h"
 
+#include "GUIObject.h"
+
 TEST(FirstTest, YouNeedToTestSomething)
 {
     FAIL();

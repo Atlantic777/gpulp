@@ -11,6 +11,8 @@ ADD_DEFINITIONS(
     -std=c++11
 )
 
+include_directories(include)
+
 #####      float point     #####
 # libs
 # unit tests
