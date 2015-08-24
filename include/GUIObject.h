@@ -5,17 +5,14 @@
 #include "gpulp_utils.h"
 
 namespace gpulp {
-class GUIObject {
-    public:
+struct GUIObject {
+  Location  location;
+  Scale     scale;
+  Texture   texture;
+  float       alpha;
 
-    private:
-        Location  location;
-        Scale     scale;
-        Texture   texture;
-        int       alpha;
-
-        std::list<GUIObject*> children;
-        GUIObject *parent;
+  std::list<GUIObject*> children;
+  GUIObject *parent;
 };
 }
 

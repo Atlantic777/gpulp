@@ -37,3 +37,4 @@ target_link_libraries(playground)
 
 #### tools ####
 add_executable(simulator src/simulator.cpp)
+add_executable(scene_example src/scene_example.cpp)
