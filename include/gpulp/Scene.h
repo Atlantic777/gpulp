@@ -9,11 +9,12 @@ namespace gpulp {
 struct Scene {
   Size size;
   Channels channels;
+  // TODO: Scene is a tree
   std::list<GUIObject> objects;
 
   Scene(Size s, Channels c) : size(s), channels(c) {}
 
-  void addObject(GUIObject &obj) {
+  void addObject(const GUIObject &obj) {
     objects.push_back(obj);
   }
 

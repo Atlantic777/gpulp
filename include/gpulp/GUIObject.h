@@ -9,7 +9,8 @@ struct GUIObject {
   Location  location;
   Scale     scale;
   Texture   texture;
-  float       alpha;
+  float     alpha;
+  short     culling;
 
   std::list<GUIObject*> children;
   GUIObject *parent;

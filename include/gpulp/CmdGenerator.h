@@ -4,15 +4,17 @@
 #include <iostream>
 #include <string>
 #include "Scene.h"
+#include <map>
 
 namespace gpulp {
 class CmdGenerator {
   private:
-    std::list<GUIObject*> objects;
-    std::list<std::string> resources;
+    std::list<GUIObject> objects;
+    std::map<std::string, Texture> resources;
     Scene *scene;
 
-    std::string collectResources();
+    void collectResources();
+    void collectObjects();
     std::string dumpWorldDescription();
     std::string dumpResources();
     std::string dumpCommands();
@@ -21,12 +23,9 @@ class CmdGenerator {
   public:
     CmdGenerator() { scene = NULL; }
 
-    void setScene(Scene *s) {
-      if(s)
-        scene = s;
-    }
-
+    void setScene(Scene *s);
     std::string generate();
+    std::map<std::string, Texture> getResources() { return resources; }
 };
 }
 
