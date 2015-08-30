@@ -1,5 +1,5 @@
+#include "gpulp/gpulp_utils.h"
 #include <iostream>
-#include <gtest/gtest.h>
 
 int main()
 {
