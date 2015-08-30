@@ -42,7 +42,7 @@ struct Pixel {
     int b;
 };
 
-enum Channels {mono, color};
+enum Channels {ch_mono = 1, ch_color = 3};
 
 }
 

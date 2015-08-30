@@ -13,31 +13,20 @@ class CmdGenerator {
     Scene *scene;
 
     std::string collectResources();
-    std::string dumpSceneDescription();
+    std::string dumpWorldDescription();
     std::string dumpResources();
     std::string dumpCommands();
 
+
   public:
-    CmdGenerator() {
-      scene = NULL;
-    }
+    CmdGenerator() { scene = NULL; }
 
     void setScene(Scene *s) {
       if(s)
         scene = s;
     }
-    std::string generate() {
-      if(scene) {
-        // dump scene description
-        // dump resources
-        // dump commands
-        return "some scene!";
-      }
-      else {
-        std::cout << "Scene not set!" << std::endl;
-        return "";
-      }
-    }
+
+    std::string generate();
 };
 }
 
