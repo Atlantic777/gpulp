@@ -2,6 +2,7 @@ file(GLOB srcs */*.cpp)
 
 set(GPULP_LIBS
   cmdgenerator
+  cmdreader
 )
 
 set(SIMULATOR_LIBS

@@ -12,6 +12,7 @@ struct Scene {
   // TODO: Scene is a tree
   std::list<GUIObject> objects;
 
+  Scene() {}
   Scene(Size s, Channels c) : size(s), channels(c) {}
 
   void addObject(const GUIObject &obj) {

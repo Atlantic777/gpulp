@@ -10,7 +10,6 @@ class Simulator {
     void setScene(Scene *s) { scene = s; }
     cv::Mat render();
 
-
   private:
     Scene *scene;
 };

@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "gpulp/Scene.h"
 #include "gpulp/CmdGenerator.h"
+#include "gpulp/CmdReader.h"
 #include "gpulp/gpulp_utils.h"
 #include "gpulp/GUIObject.h"
 #include <sstream>
@@ -65,5 +66,19 @@ TEST(CmdGenerator, CollectResources) {
   ASSERT_EQ(1, resources.size());
 }
 
-TEST(CmdParser, ParseEmptyScene) {
+TEST(CmdReader, ReadEmptyScene) {
+  std::stringstream example;
+
+  example << "# WORLD\n"
+          << "640 480 1\n"
+          << "# RESOURCES\n"
+          << "# CMDS\n";
+
+  CmdReader reader(example.str());
+  Scene scene = reader.read();
+
+  EXPECT_EQ(640, scene.size.width);
+  EXPECT_EQ(480, scene.size.height);
+  EXPECT_EQ(ch_mono, scene.channels);
+  EXPECT_EQ(0, scene.objects.size());
 }
