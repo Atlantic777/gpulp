@@ -16,6 +16,7 @@ class CmdReader {
     void readWorld();
     void readResources();
     void readCommands();
+    std::string getSection(std::string section);
 
     // D stands for delimiter
     static const std::string D_WORLD;

@@ -18,12 +18,8 @@ Scene CmdReader::read() {
 }
 
 void CmdReader::readWorld() {
-  int start = input.find(D_WORLD) + D_WORLD.length() + 1;
-  int stop  = input.find(D_RESOURCES);
-  int len   = stop - start - 1;
-
   std::stringstream world;
-  world << input.substr(start, len);
+  world << getSection(D_WORLD);
 
   int width, height, chans;
   world >> width >> height >> chans;
@@ -34,21 +30,25 @@ void CmdReader::readWorld() {
 }
 
 void CmdReader::readResources() {
-  int start = input.find(D_RESOURCES) + D_RESOURCES.length() + 1;
-  int stop  = input.find(D_WORLD);
-  int len   = stop - start - 1;
-
   std::stringstream resources;
-  resources << input.substr(start, len);
+  resources << getSection(D_RESOURCES);
 
   int location, width, height;
   std::string name;
 
-  resources >> location >> name >> width >> height;
+  resources >> std::hex >> location >> name >> width >> height;
 
   scene.resources[name] = Texture(name, Size(width, height));
   scene.resources[name].location = location;
 }
 
 void CmdReader::readCommands() {
+}
+
+std::string CmdReader::getSection(std::string section) {
+  int start = input.find(section) + section.length() + 1;
+  int stop  = input.find("#");
+  int len   = stop - start - 1;
+
+  return input.substr(start, len);
 }
