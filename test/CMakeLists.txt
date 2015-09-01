@@ -4,9 +4,14 @@ set(GPULP_LIBS
   cmdgenerator
 )
 
+set(SIMULATOR_LIBS
+  libsimulator
+)
+
 add_executable(test_runner test_runner.cpp ${srcs})
 target_link_libraries(test_runner
     ${GTEST_LIBRARIES}
     ${GPULP_LIBS}
+    ${SIMULATOR_LIBS}
     pthread
 )
