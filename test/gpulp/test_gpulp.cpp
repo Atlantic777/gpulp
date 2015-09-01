@@ -64,3 +64,6 @@ TEST(CmdGenerator, CollectResources) {
 
   ASSERT_EQ(1, resources.size());
 }
+
+TEST(CmdParser, ParseEmptyScene) {
+}

@@ -24,16 +24,8 @@ TEST(Simulator, RenderEmptyScene) {
   }
 }
 
-TEST(Simulator, FileParser) {
-  FAIL() << "Finish the test!";
-}
-
 TEST(Simulator, LoadResources) {
   FAIL() << "Finish the test!";
-}
-
-TEST(Simulator, CmdParser) {
-  FAIL() << "Finish the test";
 }
 
 TEST(Simulator, RenderOneObject) {
