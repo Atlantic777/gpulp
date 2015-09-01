@@ -31,6 +31,7 @@ struct Size {
 struct Texture {
     std::string path;
     Size size;
+    int location;
 
     Texture(std::string p, Size s) : path(p), size(s) {}
     Texture() {}

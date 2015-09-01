@@ -34,6 +34,20 @@ void CmdReader::readWorld() {
 }
 
 void CmdReader::readResources() {
+  int start = input.find(D_RESOURCES) + D_RESOURCES.length() + 1;
+  int stop  = input.find(D_WORLD);
+  int len   = stop - start - 1;
+
+  std::stringstream resources;
+  resources << input.substr(start, len);
+
+  int location, width, height;
+  std::string name;
+
+  resources >> location >> name >> width >> height;
+
+  scene.resources[name] = Texture(name, Size(width, height));
+  scene.resources[name].location = location;
 }
 
 void CmdReader::readCommands() {

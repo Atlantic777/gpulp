@@ -2,6 +2,7 @@
 #define GPULP_SCENE_H
 
 #include <list>
+#include <map>
 #include "gpulp_utils.h"
 #include "GUIObject.h"
 
@@ -9,8 +10,10 @@ namespace gpulp {
 struct Scene {
   Size size;
   Channels channels;
+
   // TODO: Scene is a tree
   std::list<GUIObject> objects;
+  std::map<std::string, Texture> resources;
 
   Scene() {}
   Scene(Size s, Channels c) : size(s), channels(c) {}

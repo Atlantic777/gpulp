@@ -82,3 +82,19 @@ TEST(CmdReader, ReadEmptyScene) {
   EXPECT_EQ(ch_mono, scene.channels);
   EXPECT_EQ(0, scene.objects.size());
 }
+
+TEST(CmdReader, ReadOneResource) {
+  std::stringstream example;
+
+  example << "# WORLD\n"
+          << "640 480 1\n"
+          << "# RESOURCES\n"
+          << "0x0000 none 200 300\n"
+          << "# CMDS\n";
+
+  CmdReader reader(example.str());
+  Scene scene = reader.read();
+
+  EXPECT_EQ(1, scene.resources.size());
+  EXPECT_EQ(0x00, scene.resources["none"].location);
+}
