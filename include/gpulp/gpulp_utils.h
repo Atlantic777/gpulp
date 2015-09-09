@@ -2,6 +2,7 @@
 #define GPULP_UTILS_H
 
 #include <string>
+#include "opencv2/opencv.hpp"
 
 namespace gpulp {
 struct Location{
@@ -32,9 +33,13 @@ struct Texture {
     std::string path;
     Size size;
     int location;
+    cv::Mat data;
 
     Texture(std::string p, Size s) : path(p), size(s) {}
     Texture() {}
+
+    static Texture fromFile(std::string p);
+    static Texture fromColor(std::string color, Size s);
 };
 
 struct Pixel {

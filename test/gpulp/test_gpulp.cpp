@@ -98,3 +98,17 @@ TEST(CmdReader, ReadOneResource) {
   EXPECT_EQ(1, scene.resources.size());
   EXPECT_EQ(0x00, scene.resources["none"].location);
 }
+
+TEST(Texture, CreateFromColor) {
+  Texture t = Texture::fromColor("white", Size(5, 5));
+
+  ASSERT_EQ(5, t.size.width);
+  ASSERT_EQ(5, t.size.height);
+
+  for(int i = 0; i < 5; i++) {
+    for(int j = 0; j < 5; j++) {
+      ASSERT_EQ(255, t.data.at<unsigned char>(i, j));
+    }
+  }
+
+}
