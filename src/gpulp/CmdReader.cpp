@@ -38,7 +38,7 @@ void CmdReader::readResources() {
 
   resources >> std::hex >> location >> name >> width >> height;
 
-  scene.resources[name] = Texture(name, Size(width, height));
+  scene.resources[name] = TextureMono(name, Size(width, height));
   scene.resources[name].location = location;
 }
 

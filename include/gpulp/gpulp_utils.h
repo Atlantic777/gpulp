@@ -5,6 +5,10 @@
 #include "opencv2/opencv.hpp"
 
 namespace gpulp {
+
+class Pixel;
+class PixelMono;
+
 struct Location{
     int x;
     int y;
@@ -29,26 +33,51 @@ struct Size {
     Size() {}
 };
 
-struct Texture {
-    std::string path;
+class TextureMono {
+  public:
     Size size;
+    std::string path;
     int location;
-    cv::Mat data;
     int id;
+    PixelMono **data;
 
-    Texture(std::string p, Size s) : path(p), size(s) {}
-    Texture() {}
+    TextureMono(std::string p, Size s) : path(p), size(s) {}
+    TextureMono() {}
 
     void setId(int id);
 
-    static Texture fromFile(std::string p);
-    static Texture fromColor(std::string color, Size s);
+    static TextureMono fromColor(std::string color, Size s);
 };
 
-struct Pixel {
-    int r;
-    int g;
-    int b;
+class Pixel {
+  public:
+    virtual unsigned char* getData() const = 0;
+    virtual void  setData(unsigned char *data) = 0;
+};
+
+class PixelMono : public Pixel {
+  public:
+    PixelMono() {
+      data = new unsigned char;
+      data[0] = 0;
+    }
+
+    unsigned char* getData() const { return data; }
+    void setData(unsigned char *data) { this->data[0] = data[0]; }
+
+    PixelMono& operator=(const PixelMono &other) {
+      this->data[0] = other.getData()[0];
+      return *this;
+    }
+
+    PixelMono& operator=(const Pixel &other) {
+      this->data[0] = other.getData()[0];
+      return *this;
+    }
+
+
+  private:
+    unsigned char *data;
 };
 
 enum Channels {ch_mono = 1, ch_color = 3};

@@ -25,7 +25,7 @@ TEST(CmdGenerator, GenerateOneObject) {
   Scene scene(Size(640, 480), ch_mono);
 
   GUIObject obj;
-  Texture   t("none", Size(200, 300));
+  TextureMono   t("none", Size(200, 300));
 
   obj.parent     = NULL;
   obj.location.x = 100;
@@ -56,12 +56,12 @@ TEST(CmdGenerator, CollectResources) {
   Scene scene(Size(640, 480), ch_mono);
 
   GUIObject obj;
-  Texture t("none", Size(200, 300));
+  TextureMono t("none", Size(200, 300));
 
   scene.addObject(obj);
   gen.setScene(&scene);
 
-  std::map<std::string, Texture> resources = gen.getResources();
+  std::map<std::string, TextureMono> resources = gen.getResources();
 
   ASSERT_EQ(1, resources.size());
 }
@@ -100,14 +100,14 @@ TEST(CmdReader, ReadOneResource) {
 }
 
 TEST(Texture, CreateFromColor) {
-  Texture t = Texture::fromColor("white", Size(5, 5));
+  TextureMono t = TextureMono::fromColor("white", Size(5, 5));
 
   ASSERT_EQ(5, t.size.width);
   ASSERT_EQ(5, t.size.height);
 
   for(int i = 0; i < 5; i++) {
     for(int j = 0; j < 5; j++) {
-      ASSERT_EQ(255, t.data.at<unsigned char>(i, j));
+      ASSERT_EQ(255, t.data[i][j].getData()[0]);
     }
   }
 

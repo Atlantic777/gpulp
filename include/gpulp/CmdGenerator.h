@@ -10,7 +10,7 @@ namespace gpulp {
 class CmdGenerator {
   private:
     std::list<GUIObject> objects;
-    std::map<std::string, Texture> resources;
+    std::map<std::string, TextureMono> resources;
     Scene *scene;
 
     void collectResources();
@@ -25,7 +25,7 @@ class CmdGenerator {
 
     void setScene(Scene *s);
     std::string generate();
-    std::map<std::string, Texture> getResources() { return resources; }
+    std::map<std::string, TextureMono> getResources() { return resources; }
 };
 }
 

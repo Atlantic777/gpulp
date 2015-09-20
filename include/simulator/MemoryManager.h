@@ -7,13 +7,13 @@
 namespace gpulp {
 class MemoryManager {
     public:
-        void addTexture(Texture t);
-        Texture getTexture(int id);
+        void addTexture(TextureMono t);
+        TextureMono getTexture(int id);
         int getLocation(int id);
 
     private:
         void initMemory(int size);
-        std::map<int, Texture> storage;
+        std::map<int, TextureMono> storage;
 };
 }
 

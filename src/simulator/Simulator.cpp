@@ -5,10 +5,10 @@ using namespace gpulp;
 
 void Simulator::setScene(Scene *s) {
   scene = s;
-  fb = cv::Mat::zeros(scene->size.width, scene->size.height, CV_8UC1);
+  fb = FrameBuffer::create(scene->size, scene->channels);
 }
 
-cv::Mat Simulator::render() {
+FrameBuffer* Simulator::render() {
   for(auto obj : scene->objects) {
     renderOne(obj);
   }
@@ -27,8 +27,7 @@ void Simulator::renderOne(GUIObject obj) {
       int tx = px + col;
       int ty = py + row;
 
-      unsigned char val = obj.texture.data.at<unsigned char>(col, row);
-      fb.at<unsigned char>(tx, ty) = val;
+      fb->write(ty, tx, obj.texture.data[row][col]);
     }
   }
 }

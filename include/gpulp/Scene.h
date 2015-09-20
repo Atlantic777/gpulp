@@ -13,7 +13,7 @@ struct Scene {
 
   // TODO: Scene is a tree
   std::list<GUIObject> objects;
-  std::map<std::string, Texture> resources;
+  std::map<std::string, TextureMono> resources;
 
   Scene() {}
   Scene(Size s, Channels c) : size(s), channels(c) {}
