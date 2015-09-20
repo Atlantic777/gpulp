@@ -28,7 +28,7 @@ struct Size {
     int width;
     int height;
 
-    Size(int w, int h) {width = w; height = h;}
+    Size(int h, int w) {width = w; height = h;}
     Size() {}
 };
 
@@ -59,6 +59,11 @@ class PixelMono : public Pixel {
     PixelMono() {
       data = new unsigned char;
       data[0] = 0;
+    }
+
+    PixelMono(unsigned char val) {
+      data = new unsigned char;
+      data[0] = val;
     }
 
     unsigned char* getData() const { return data; }
