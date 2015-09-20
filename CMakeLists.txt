@@ -9,6 +9,18 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 find_package(OpenCV REQUIRED)
 
+set(GPULP_LIBS
+  cmdgenerator
+  cmdreader
+  utils
+)
+
+set(SIMULATOR_LIBS
+  libsimulator
+  libmemorymanager
+)
+
 include_directories(include)
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(functional)

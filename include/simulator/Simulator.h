@@ -7,11 +7,13 @@
 namespace gpulp {
 class Simulator {
   public:
-    void setScene(Scene *s) { scene = s; }
+    void setScene(Scene *s);
     cv::Mat render();
 
   private:
     Scene *scene;
+    cv::Mat fb;
+    void renderOne(GUIObject obj);
 };
 }
 

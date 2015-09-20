@@ -34,9 +34,12 @@ struct Texture {
     Size size;
     int location;
     cv::Mat data;
+    int id;
 
     Texture(std::string p, Size s) : path(p), size(s) {}
     Texture() {}
+
+    void setId(int id);
 
     static Texture fromFile(std::string p);
     static Texture fromColor(std::string color, Size s);

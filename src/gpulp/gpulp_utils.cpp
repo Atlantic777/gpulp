@@ -18,3 +18,7 @@ Texture Texture::fromColor(std::string color, Size s) {
 
   return t;
 }
+
+void Texture::setId(int id) {
+  this->id = id;
+}
