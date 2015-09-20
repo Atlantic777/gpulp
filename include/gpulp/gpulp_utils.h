@@ -2,7 +2,6 @@
 #define GPULP_UTILS_H
 
 #include <string>
-#include "opencv2/opencv.hpp"
 
 namespace gpulp {
 

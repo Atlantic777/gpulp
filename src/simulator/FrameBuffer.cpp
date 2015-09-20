@@ -16,6 +16,8 @@ FrameBuffer* FrameBuffer::create(Size size, Channels type) {
 }
 
 FrameBufferMono::FrameBufferMono(Size size) {
+  this->size = size;
+
   data = new PixelMono*[size.height];
   for(int i = 0; i < size.height; i++) {
     data[i] = new PixelMono[size.width];

@@ -7,6 +7,7 @@ namespace gpulp {
 
 class FrameBuffer {
   public:
+    Size size;
     virtual Pixel& read(int row, int col) = 0;
     virtual void  write(int row, int col, Pixel &p) = 0;
 

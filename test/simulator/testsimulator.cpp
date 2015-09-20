@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "gpulp/Scene.h"
-#include "opencv2/opencv.hpp"
 #include "gpulp/gpulp_utils.h"
 #include "simulator/Simulator.h"
 #include "simulator/MemoryManager.h"
