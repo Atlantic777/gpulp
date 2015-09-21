@@ -14,6 +14,7 @@ set(GPULP_LIBS
   cmdgenerator
   cmdreader
   utils
+  libpainter
 )
 
 set(SIMULATOR_LIBS

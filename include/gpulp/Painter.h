@@ -1,44 +1,39 @@
 #ifndef GPULP_PAINTER_H
 #define GPULP_PAINTER_H
 
+#include "simulator/FrameBuffer.h"
+#include "gpulp/GUIObject.h"
+
+namespace gpulp {
+
 class Painter {
   public:
-    virtual void renderObject();
+    void render(FrameBuffer &fb, GUIObject obj);
   private:
-    virtual void blit();
-    virtual void stretchBlit();
+    void blit(FrameBuffer &fb, GUIObject obj);
+    virtual void stretchBlit() = 0;
 };
 
-class PainterBilinarFloat : public Painter {
-  public:
-    virtual void renderObject();
+class PainterBilinearFloat : public Painter {
   private:
-    void blit() {}
     void stretchBlit() {}
 };
 
 class PainterBilinearFixed : public Painter {
-  public:
-    virtual void renderObject();
   private:
-    void blit() {}
     void stretchBlit() {}
 };
 
 class PainterGravityFloat : public Painter {
-  public:
-    virtual void renderObject();
   private:
-    void blit() {}
     void stretchBlit() {}
 };
 
 class PainterGravityFixed : public Painter {
-  public:
-    virtual void renderObject();
   private:
-    void blit() {}
     void stretchBlit() {}
 };
+
+}
 
 #endif
