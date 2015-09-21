@@ -18,16 +18,16 @@ FrameBuffer* FrameBuffer::create(Size size, Channels type) {
 FrameBufferMono::FrameBufferMono(Size size) {
   this->size = size;
 
-  data = new PixelMono*[size.height];
-  for(int i = 0; i < size.height; i++) {
-    data[i] = new PixelMono[size.width];
+  data = new PixelMono*[size.width];
+  for(int i = 0; i < size.width; i++) {
+    data[i] = new PixelMono[size.height];
   }
 }
 
-Pixel& FrameBufferMono::read(int row, int col) {
-  return data[row][col];
+Pixel& FrameBufferMono::read(int col, int row) {
+  return data[col][row];
 }
 
-void FrameBufferMono::write(int row, int col, Pixel &p) {
-  data[row][col] = p;
+void FrameBufferMono::write(int col, int row, Pixel &p) {
+  data[col][row] = p;
 }

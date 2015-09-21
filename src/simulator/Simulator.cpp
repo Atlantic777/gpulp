@@ -12,6 +12,7 @@ FrameBuffer* Simulator::render() {
   for(auto obj : scene->objects) {
     renderOne(obj);
   }
+
   return fb;
 }
 
@@ -24,10 +25,10 @@ void Simulator::renderOne(GUIObject obj) {
 
   for(int col = 0; col < width; col++) {
     for(int row = 0; row < height; row++) {
-      int tx = px + col;
       int ty = py + row;
+      int tx = px + col;
 
-      fb->write(ty, tx, obj.texture.data[row][col]);
+      fb->write(tx, ty, obj.texture.data[col][row]);
     }
   }
 }

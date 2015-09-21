@@ -28,7 +28,7 @@ struct Size {
     int width;
     int height;
 
-    Size(int h, int w) {width = w; height = h;}
+    Size(int w, int h) {width = w; height = h;}
     Size() {}
 };
 

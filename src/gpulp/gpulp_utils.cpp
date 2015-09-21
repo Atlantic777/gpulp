@@ -7,9 +7,9 @@ TextureMono TextureMono::fromColor(std::string color, Size s) {
   TextureMono t;
   t.size = s;
 
-  t.data = new PixelMono*[s.height];
-  for(int i = 0; i < s.height; i++) {
-    t.data[i] = new PixelMono[s.width];
+  t.data = new PixelMono*[s.width];
+  for(int i = 0; i < s.width; i++) {
+    t.data[i] = new PixelMono[s.height];
   }
 
   PixelMono example;
@@ -24,7 +24,7 @@ TextureMono TextureMono::fromColor(std::string color, Size s) {
 
   for(int row = 0; row < t.size.height; row++) {
     for(int col = 0; col < t.size.width; col++) {
-      t.data[row][col] = example;
+      t.data[col][row] = example;
     }
   }
 

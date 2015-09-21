@@ -94,13 +94,14 @@ TEST(Simulator, BlitTwoObjects) {
   sim.setScene(&scene);
 
   FrameBuffer *fb = sim.render();
+  puts("finish");
 
   for(int col = 0; col < width; col++) {
     for(int row = 0; row < height; row++) {
       if(row < 5 || row >= 10)
-        ASSERT_EQ(255, fb->read(row, col).getData()[0]);
+        ASSERT_EQ(255, fb->read(col, row).getData()[0]);
       else
-        ASSERT_EQ(0, fb->read(row, col).getData()[0]);
+        ASSERT_EQ(0, fb->read(col, row).getData()[0]);
     }
   }
 }
