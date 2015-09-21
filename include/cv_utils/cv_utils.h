@@ -12,7 +12,7 @@ cv::Mat FrameBuffer2Mat(FrameBuffer *fb) {
 
   for(int row = 0; row < fb->size.height; row++) {
     for(int col = 0; col < fb->size.width; col++) {
-      m.at<unsigned char>(row, col) = fb->read(row,col).getData()[0];
+      m.at<unsigned char>(row, col) = fb->read(col,row).getData()[0];
     }
   }
 
@@ -23,17 +23,17 @@ TextureMono LoadTexture(std::string path) {
   cv::Mat m = cv::imread(path, CV_LOAD_IMAGE_GRAYSCALE);
 
   TextureMono t;
-  t.size = Size(m.rows, m.cols);
+  t.size = Size(m.cols, m.rows);
 
-  t.data = new PixelMono*[m.rows];
-  for(int i = 0; i < m.rows; i++) {
-    t.data[i] = new PixelMono[m.cols];
+  t.data = new PixelMono*[m.cols];
+  for(int i = 0; i < m.cols; i++) {
+    t.data[i] = new PixelMono[m.rows];
   }
 
 
   for(int row = 0; row < m.rows; row++) {
     for(int col = 0; col < m.cols; col++) {
-      t.data[row][col] = PixelMono(m.at<unsigned char>(row, col));
+      t.data[col][row] = PixelMono(m.at<unsigned char>(row, col));
     }
   }
 
