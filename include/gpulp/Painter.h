@@ -11,12 +11,12 @@ class Painter {
     void render(FrameBuffer &fb, GUIObject obj);
   private:
     void blit(FrameBuffer &fb, GUIObject obj);
-    virtual void stretchBlit() = 0;
+    virtual void stretchBlit(FrameBuffer &fb, GUIObject obj) = 0;
 };
 
 class PainterBilinearFloat : public Painter {
   private:
-    void stretchBlit() {}
+    void stretchBlit(FrameBuffer &fb, GUIObject obj);
 };
 
 class PainterBilinearFixed : public Painter {

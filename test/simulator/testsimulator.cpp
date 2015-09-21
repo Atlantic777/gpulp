@@ -105,7 +105,3 @@ TEST(Simulator, BlitTwoObjects) {
     }
   }
 }
-
-TEST(Simulator, StretchBlitOneObject) {
-  FAIL() << "Finish the test!";
-}
