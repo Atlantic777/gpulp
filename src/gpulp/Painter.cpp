@@ -1,4 +1,5 @@
 #include "gpulp/Painter.h"
+#include "gpulp/InterpolationContext.h"
 
 using namespace gpulp;
 
@@ -39,4 +40,16 @@ void PainterBilinearFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
       // TODO: implement this
     }
   }
+}
+
+InterpolationContext Painter::getInterpolationContext(Location l,
+    FrameBuffer &fb, GUIObject &obj) {
+  InterpolationContext ctx;
+
+  ctx.a = &obj.texture.data[0][0];
+  ctx.b = &obj.texture.data[0][0];
+  ctx.c = &obj.texture.data[0][0];
+  ctx.d = &obj.texture.data[0][0];
+
+  return ctx;
 }

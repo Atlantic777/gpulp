@@ -3,18 +3,20 @@
 #include "gpulp/gpulp_utils.h"
 #include "simulator/FrameBuffer.h"
 #include "gpulp/GUIObject.h"
+#include "gpulp/InterpolationContext.h"
 
 using namespace gpulp;
 
 TEST(PainterBilinearFloat, Blit) {
-  PainterBilinearFloat p;
   FrameBufferMono fb(Size(100, 100));
-  
+
   TextureMono t = TextureMono::fromColor("white", Size(10, 10));
   GUIObject obj;
   obj.location = Location(0, 90);
   obj.scale = Scale(1, 1);
   obj.texture = t;
+
+  PainterBilinearFloat p;
 
   p.render(fb, obj);
 
@@ -30,8 +32,33 @@ TEST(PainterBilinearFloat, Blit) {
   }
 }
 
+TEST(PainterBilinearFloat, GetInterpolationContext) {
+  FrameBufferMono fb = FrameBufferMono(Size(10, 10));
+  TextureMono t = TextureMono::fromColor("white", Size(2, 2));
+  GUIObject obj;
+  obj.location = Location(0, 0);
+  obj.scale = Scale(2, 2);
+  obj.texture = t;
+
+  PainterBilinearFloat pbf;
+
+  InterpolationContext ctx;
+  ctx = pbf.getInterpolationContext(Location(0, 0), fb, obj);
+
+  ASSERT_FALSE(ctx.a == NULL);
+  ASSERT_FALSE(ctx.b == NULL);
+  ASSERT_FALSE(ctx.c == NULL);
+  ASSERT_FALSE(ctx.d == NULL);
+
+  ASSERT_EQ(255, ctx.a->getData()[0]);
+  ASSERT_EQ(255, ctx.b->getData()[0]);
+  ASSERT_EQ(255, ctx.c->getData()[0]);
+  ASSERT_EQ(255, ctx.d->getData()[0]);
+
+  FAIL() << "finish this test";
+}
+
 TEST(PainterBilinearFloat, StretchBlit) {
-  PainterBilinearFloat p;
   FrameBufferMono fb(Size(10, 10));
 
   TextureMono t = TextureMono::fromColor("white", Size(2, 2));
@@ -39,6 +66,8 @@ TEST(PainterBilinearFloat, StretchBlit) {
   obj.location = Location(0, 0);
   obj.scale = Scale(2, 2);
   obj.texture = t;
+
+  PainterBilinearFloat p;
 
   p.render(fb, obj);
 
