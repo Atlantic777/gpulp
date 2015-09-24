@@ -15,8 +15,6 @@ void Painter::render(FrameBuffer &fb, GUIObject obj) {
 }
 
 void Painter::blit(FrameBuffer &fb, GUIObject obj) {
-  cout << "doing blit" << endl;
-
   int width  = obj.texture.size.width;
   int height = obj.texture.size.height;
 
@@ -33,7 +31,6 @@ void Painter::blit(FrameBuffer &fb, GUIObject obj) {
 }
 
 void PainterBilinearFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
-  cout << "dong stretch blit" << endl;
   InterpolationContext ctx;
 
   for(int col = 0; col < obj.size.width; col++) {
@@ -41,16 +38,16 @@ void PainterBilinearFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
       ctx = getInterpolationContext(Location(col, row), fb, obj);
 
       PixelMono q1(
-        ctx.a->getData()[0]*ctx.dx +
-        ctx.b->getData()[0]*(1 - ctx.dx));
+        ctx.a->getData()[0]*(1-ctx.dx) +
+        ctx.b->getData()[0]*(ctx.dx));
 
       PixelMono q2(
-        ctx.c->getData()[0]*ctx.dx +
-        ctx.d->getData()[0]*(1-ctx.dx));
+        ctx.c->getData()[0]*(1-ctx.dx) +
+        ctx.d->getData()[0]*(ctx.dx));
 
       PixelMono p(
-          q1.getData()[0]*ctx.dy +
-          q1.getData()[0]*(1-ctx.dy));
+          q1.getData()[0]*(1-ctx.dy) +
+          q2.getData()[0]*ctx.dy);
 
       fb.write(col, row, p);
     }
@@ -79,7 +76,7 @@ InterpolationContext Painter::getInterpolationContext(Location l,
   int step_x = !(obj.texture.size.width  == 1);
   int step_y = !(obj.texture.size.height == 1);
 
-  Location a(x, y);
+  Location a(x         , y);
   Location b(x + step_x, y);
   Location c(x         , y + step_y);
   Location d(x + step_x, y + step_y);
