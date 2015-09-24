@@ -15,6 +15,7 @@ set(GPULP_LIBS
   cmdreader
   utils
   libpainter
+  libgravityutils
 )
 
 set(SIMULATOR_LIBS

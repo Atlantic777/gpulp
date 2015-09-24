@@ -30,7 +30,8 @@ class PainterBilinearFixed : public Painter {
 
 class PainterGravityFloat : public Painter {
   private:
-    void stretchBlit() {}
+    void stretchBlit(FrameBuffer &fb, GUIObject obj);
+    PixelMono interpolate(InterpolationContext &ctx);
 };
 
 class PainterGravityFixed : public Painter {
