@@ -58,8 +58,10 @@ TEST(PainterBilinearFloat, GetInterpolationContext) {
   ASSERT_EQ(255, ctx.d->getData()[0]);
 
   ctx = pbf.getInterpolationContext(Location(2, 0), fb, obj);
-
-  FAIL() << "finish test";
+  ASSERT_EQ(255, ctx.a->getData()[0]);
+  ASSERT_EQ(255, ctx.b->getData()[0]);
+  ASSERT_EQ(255, ctx.c->getData()[0]);
+  ASSERT_EQ(255, ctx.d->getData()[0]);
 }
 
 TEST(PainterBilinearFloat, StretchBlit) {
@@ -77,7 +79,7 @@ TEST(PainterBilinearFloat, StretchBlit) {
 
   for(int row = 0; row < 10; row++) {
     for(int col = 0; col < 10; col++) {
-      if(row < 2 && col < 2) {
+      if(row < 4 && col < 4) {
         ASSERT_EQ(255, fb.read(col, row).getData()[0]);
       }
       else {

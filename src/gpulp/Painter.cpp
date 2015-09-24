@@ -36,6 +36,20 @@ void PainterBilinearFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
   for(int col = 0; col < obj.size.width; col++) {
     for(int row = 0; row < obj.size.height; row++) {
       ctx = getInterpolationContext(Location(col, row), fb, obj);
+
+      PixelMono q1(
+        ctx.a->getData()[0]*ctx.dx +
+        ctx.b->getData()[0]*(1 - ctx.dx));
+
+      PixelMono q2(
+        ctx.c->getData()[0]*ctx.dx +
+        ctx.d->getData()[0]*(1-ctx.dx));
+
+      PixelMono p(
+          q1.getData()[0]*ctx.dy +
+          q1.getData()[0]*(1-ctx.dy));
+
+      fb.write(col, row, p);
     }
   }
 }

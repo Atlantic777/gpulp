@@ -17,8 +17,8 @@ class FrameBuffer {
 class FrameBufferMono : public FrameBuffer {
   public:
     FrameBufferMono(Size size);
-    Pixel& read(int row, int col);
-    void   write(int row, int col, Pixel &p);
+    Pixel& read(int col, int row);
+    void   write(int col, int row, Pixel &p);
 
   private:
     PixelMono **data;

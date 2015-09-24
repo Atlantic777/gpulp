@@ -94,7 +94,6 @@ TEST(Simulator, BlitTwoObjects) {
   sim.setScene(&scene);
 
   FrameBuffer *fb = sim.render();
-  puts("finish");
 
   for(int col = 0; col < width; col++) {
     for(int row = 0; row < height; row++) {
