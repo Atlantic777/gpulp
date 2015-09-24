@@ -7,7 +7,7 @@
 namespace gpulp {
 struct GUIObject {
   Location  location;
-  Scale     scale;
+  Size      size;
   TextureMono texture;
   float     alpha;
   short     culling;

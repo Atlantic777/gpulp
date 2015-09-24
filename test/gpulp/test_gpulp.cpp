@@ -31,7 +31,7 @@ TEST(CmdGenerator, GenerateOneObject) {
   obj.location.x = 100;
   obj.location.y = 100;
   obj.texture    = t;
-  obj.scale      = Scale(1, 1);
+  obj.size       = t.size;
   obj.culling    = 0;
   obj.alpha      = 1;
 
@@ -46,7 +46,7 @@ TEST(CmdGenerator, GenerateOneObject) {
          << "# RESOURCES\n"
          << "0x0000 none 200 300\n"
          << "# CMDS\n"
-         << "100 100 0x0000 200 300 255 255 0 255\n";
+         << "100 100 0x0000 200 300 200 300 0 255\n";
 
   ASSERT_STREQ(target.str().c_str(), res.c_str());
 }

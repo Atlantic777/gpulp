@@ -53,7 +53,7 @@ std::string CmdGenerator::dumpCommands() {
     res << i.location.x << " " << i.location.y << " "
         << "0x0000 "
         << i.texture.size.width << " " << i.texture.size.height << " "
-        << (int)(i.scale.fx*255) << " " << (int)(i.scale.fy*255) << " "
+        << i.size.width << " " << i.size.height << " "
         << i.culling << " " << (int)(i.alpha*255) << "\n";
   }
 

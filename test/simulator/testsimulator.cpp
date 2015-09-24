@@ -55,7 +55,7 @@ TEST(Simulator, BlitOneObject) {
   GUIObject obj;
   obj.parent = NULL;
   obj.location = Location(0, 0);
-  obj.scale = Scale(1, 1);
+  obj.size = plainSquare.size;
   obj.texture = plainSquare;
 
   scene.addObject(obj);

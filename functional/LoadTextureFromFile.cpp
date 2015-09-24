@@ -10,7 +10,7 @@ int main() {
 
   GUIObject obj;
   obj.location = Location(0, 0);
-  obj.scale    = Scale(1, 1);
+  obj.size    = t.size;
   obj.texture  = t;
   obj.parent   = NULL;
 

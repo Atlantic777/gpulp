@@ -15,7 +15,7 @@ TEST(PainterBilinearFloat, Blit) {
   TextureMono t = TextureMono::fromColor("white", Size(10, 10));
   GUIObject obj;
   obj.location = Location(0, 90);
-  obj.scale = Scale(1, 1);
+  obj.size = t.size;
   obj.texture = t;
 
   PainterBilinearFloat p;
@@ -39,7 +39,7 @@ TEST(PainterBilinearFloat, GetInterpolationContext) {
   TextureMono t = TextureMono::fromColor("white", Size(2, 2));
   GUIObject obj;
   obj.location = Location(0, 0);
-  obj.scale = Scale(2, 2);
+  obj.size = Size(4, 4);
   obj.texture = t;
 
   PainterBilinearFloat pbf;
@@ -58,80 +58,8 @@ TEST(PainterBilinearFloat, GetInterpolationContext) {
   ASSERT_EQ(255, ctx.d->getData()[0]);
 
   ctx = pbf.getInterpolationContext(Location(2, 0), fb, obj);
-}
 
-void check_locations_22(std::map<char, Location> m) {
-  Location a = m['a'];
-  Location b = m['b'];
-  Location c = m['c'];
-  Location d = m['d'];
-
-  ASSERT_EQ(0, a.x);
-  ASSERT_EQ(0, a.y);
-
-  ASSERT_EQ(1, b.x);
-  ASSERT_EQ(0, b.y);
-
-  ASSERT_EQ(0, c.x);
-  ASSERT_EQ(1, c.y);
-
-  ASSERT_EQ(1, d.x);
-  ASSERT_EQ(1, d.y);
-}
-
-TEST(PainterBilinearFloat, GetInterpolationLocations22) {
-  FrameBufferMono fb = FrameBufferMono(Size(10, 10));
-  TextureMono t = TextureMono::fromColor("white", Size(2, 2));
-  GUIObject obj;
-  obj.location = Location(0, 0);
-  obj.scale = Scale(2, 2);
-  obj.texture = t;
-
-  PainterBilinearFloat pbf;
-  std::map<char, Location> m;
-
-  for(int col = 0; col < 4; col++) {
-    for(int row = 0; row < 4; row++) {
-      check_locations_22(pbf.getSourceLocations(Location(row, col), obj));
-    }
-  }
-}
-
-void check_locations_11(std::map<char, Location> m) {
-  Location a = m['a'];
-  Location b = m['b'];
-  Location c = m['c'];
-  Location d = m['d'];
-
-  ASSERT_EQ(0, a.x);
-  ASSERT_EQ(0, a.y);
-
-  ASSERT_EQ(0, b.x);
-  ASSERT_EQ(0, b.y);
-
-  ASSERT_EQ(0, c.x);
-  ASSERT_EQ(0, c.y);
-
-  ASSERT_EQ(0, d.x);
-  ASSERT_EQ(0, d.y);
-}
-
-TEST(PainterBilinearFloat, GetInterpolationLocations11) {
-  FrameBufferMono fb = FrameBufferMono(Size(10, 10));
-  TextureMono t = TextureMono::fromColor("white", Size(1, 1));
-  GUIObject obj;
-  obj.location = Location(0, 0);
-  obj.scale = Scale(2, 2);
-  obj.texture = t;
-
-  PainterBilinearFloat pbf;
-  std::map<char, Location> m;
-
-  for(int col = 0; col < 4; col++) {
-    for(int row = 0; row < 4; row++) {
-      check_locations_11(pbf.getSourceLocations(Location(row, col), obj));
-    }
-  }
+  FAIL() << "finish test";
 }
 
 TEST(PainterBilinearFloat, StretchBlit) {
@@ -140,7 +68,7 @@ TEST(PainterBilinearFloat, StretchBlit) {
   TextureMono t = TextureMono::fromColor("white", Size(2, 2));
   GUIObject obj;
   obj.location = Location(0, 0);
-  obj.scale = Scale(2, 2);
+  obj.size = Size(4, 4);
   obj.texture = t;
 
   PainterBilinearFloat p;
