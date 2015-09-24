@@ -13,7 +13,10 @@ struct Location{
     int y;
 
     Location(int x, int y) { this->x = x; this->y = y; }
-    Location() {}
+    Location() {
+      x = -1;
+      y = -1;
+    }
 };
 
 struct Scale {

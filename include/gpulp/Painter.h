@@ -4,6 +4,7 @@
 #include "simulator/FrameBuffer.h"
 #include "gpulp/GUIObject.h"
 #include "gpulp/InterpolationContext.h"
+#include <map>
 
 namespace gpulp {
 
@@ -12,6 +13,7 @@ class Painter {
     void render(FrameBuffer &fb, GUIObject obj);
     InterpolationContext getInterpolationContext(Location l,
         FrameBuffer &fb, GUIObject &obj);
+    std::map<char, Location> getSourceLocations(Location l, GUIObject obj);
   private:
     void blit(FrameBuffer &fb, GUIObject obj);
     virtual void stretchBlit(FrameBuffer &fb, GUIObject obj) = 0;
