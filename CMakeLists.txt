@@ -21,6 +21,7 @@ set(SIMULATOR_LIBS
   libsimulator
   libmemorymanager
   libframebuffer
+  libpainter
 )
 
 add_subdirectory(src)

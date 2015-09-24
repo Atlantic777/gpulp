@@ -1,4 +1,5 @@
 #include "simulator/Simulator.h"
+#include "gpulp/Painter.h"
 #include <iostream>
 
 using namespace gpulp;
@@ -17,18 +18,6 @@ FrameBuffer* Simulator::render() {
 }
 
 void Simulator::renderOne(GUIObject obj) {
-  int width = obj.texture.size.width;
-  int height = obj.texture.size.height;
-
-  int px = obj.location.x;
-  int py = obj.location.y;
-
-  for(int col = 0; col < width; col++) {
-    for(int row = 0; row < height; row++) {
-      int ty = py + row;
-      int tx = px + col;
-
-      fb->write(tx, ty, obj.texture.data[col][row]);
-    }
-  }
+  PainterBilinearFloat p;
+  p.render(*fb, obj);
 }

@@ -87,6 +87,9 @@ TEST(Simulator, BlitTwoObjects) {
   top.location = Location(0, 0);
   bottom.location = Location(0, 10);
 
+  top.size = t.size;
+  bottom.size = t.size;
+
   scene.addObject(top);
   scene.addObject(bottom);
 

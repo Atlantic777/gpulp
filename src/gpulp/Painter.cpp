@@ -15,6 +15,8 @@ void Painter::render(FrameBuffer &fb, GUIObject obj) {
 }
 
 void Painter::blit(FrameBuffer &fb, GUIObject obj) {
+  cout << "doing blit" << endl;
+
   int width  = obj.texture.size.width;
   int height = obj.texture.size.height;
 
@@ -31,6 +33,7 @@ void Painter::blit(FrameBuffer &fb, GUIObject obj) {
 }
 
 void PainterBilinearFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
+  cout << "dong stretch blit" << endl;
   InterpolationContext ctx;
 
   for(int col = 0; col < obj.size.width; col++) {
