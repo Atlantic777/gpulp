@@ -254,3 +254,12 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
   ASSERT_FLOAT_EQ(0.89*0.29*0.29, w[2]);
   ASSERT_FLOAT_EQ(0.89*0.29*0.89, w[3]);
 }
+
+TEST(GravityFloat, NormalizeWeights) {
+  std::vector<float> w(4, 1);
+  normalize_weights(w);
+
+  for(int i = 0; i < 4; i++) {
+    ASSERT_EQ(0.25, w[i]);
+  }
+}

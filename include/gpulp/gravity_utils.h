@@ -24,6 +24,7 @@ namespace gpulp {
   void maximum_jump(std::vector<unsigned char> &diffs, int &Dmax, int &Kmax);
   int get_choice_of_case(GravityContext &ctx);
   std::vector<float> get_weights(GravityContext &ctx);
+  std::vector<float> normalize_weights(std::vector<float> &w);
 }
 
 #endif

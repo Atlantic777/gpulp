@@ -213,3 +213,16 @@ std::vector<float> gpulp::get_weights(GravityContext &ctx) {
 
   return w;
 }
+
+std::vector<float> gpulp::normalize_weights(std::vector<float> &w) {
+  float sum = 0;
+  for(int i = 0; i < 4; i++) {
+    sum += w[i];
+  }
+
+  for(int i = 0; i < 4; i++) {
+    w[i] /= sum;
+  }
+
+  return w;
+}
