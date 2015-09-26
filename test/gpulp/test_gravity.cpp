@@ -51,3 +51,42 @@ TEST(GravityFloat, ArgSortixels) {
     EXPECT_EQ(3-i, s[i]);
   }
 }
+
+TEST(GravityFloat, DiffPixelArrAllEqual) {
+  PixelArr pixels;
+  pixels.push_back(new PixelMono(10));
+  pixels.push_back(new PixelMono(10));
+  pixels.push_back(new PixelMono(10));
+  pixels.push_back(new PixelMono(10));
+
+  std::vector<unsigned char> diffs = diff_pixels(pixels);
+
+  ASSERT_EQ(3, diffs.size());
+
+  for(int i = 0; i < 3; i++) {
+    EXPECT_EQ(0, diffs[i]);
+  }
+}
+
+TEST(GravityFloat, MaximumJump) {
+  PixelArr pixels;
+  pixels.push_back(new PixelMono(10));
+  pixels.push_back(new PixelMono(20));
+  pixels.push_back(new PixelMono(40));
+  pixels.push_back(new PixelMono(70));
+
+  std::vector<unsigned char> diffs = diff_pixels(pixels);
+
+  int Dmax, Kmax;
+  maximum_jump(diffs, Dmax, Kmax);
+
+  ASSERT_NE(-1, Dmax);
+  ASSERT_NE(-1, Kmax);
+
+  ASSERT_EQ(30, Dmax);
+  ASSERT_EQ(2, Kmax);
+}
+
+TEST(GravityFloat, GetChoiceOfCase) {
+  FAIL() << "finish the test";
+}

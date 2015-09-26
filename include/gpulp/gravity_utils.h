@@ -6,9 +6,21 @@
 #include <vector>
 
 namespace gpulp {
-  std::vector<Pixel*> sort_pixels(InterpolationContext &ctx);
+  typedef std::vector<Pixel*> PixelArr;
+
+  struct GravityContext {
+    InterpolationContext interpolationCtx;
+    int Dmax;
+    int Kmax;
+    std::vector<int> Nmax;
+  };
+
+  PixelArr sort_pixels(InterpolationContext &ctx);
   std::vector<int> arg_sort_pixels(InterpolationContext &ctx);
   std::vector<float> get_gravity_distances(InterpolationContext &ctx);
+  std::vector<unsigned char> diff_pixels(PixelArr &pixels);
+  void maximum_jump(std::vector<unsigned char> &diffs, int &Dmax, int &Kmax);
+  int get_choice_of_case(GravityContext &ctx);
 }
 
 #endif

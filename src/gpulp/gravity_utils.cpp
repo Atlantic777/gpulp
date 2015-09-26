@@ -52,7 +52,7 @@ PixelPairArr pixel_pair_sort(InterpolationContext &ctx){
   return sorted;
 }
 
-std::vector<Pixel*> gpulp::sort_pixels(InterpolationContext &ctx) {
+PixelArr gpulp::sort_pixels(InterpolationContext &ctx) {
   std::vector<Pixel*> parr;
   PixelPairArr pairs = pixel_pair_sort(ctx);
 
@@ -83,4 +83,33 @@ std::vector<float> gpulp::get_gravity_distances(InterpolationContext &ctx) {
   dst.push_back(pow(1-ctx.dx, 2) + pow(1-ctx.dy, 2));
 
   return dst;
+}
+
+std::vector<unsigned char> gpulp::diff_pixels(PixelArr &pixels) {
+  std::vector<unsigned char> diffs;
+  unsigned char tmp;
+
+  for(int i = 0; i < 3; i++) {
+    tmp = abs(pixels[i+1]->getData()[0] - pixels[i]->getData()[0]);
+    diffs.push_back(tmp);
+  }
+
+  return diffs;
+}
+
+void gpulp::maximum_jump(std::vector<unsigned char> &diffs,
+    int &Dmax, int &Kmax)  {
+  Dmax = -1;
+  Kmax = -1;
+
+  for(int i = 0; i < 3 && i < diffs.size(); i++) {
+    if(diffs[i] > Dmax) {
+      Dmax = diffs[i];
+      Kmax = i;
+    }
+  }
+}
+
+int gpulp::get_choice_of_case(GravityContext &ctx) {
+  return 0;
 }
