@@ -88,5 +88,53 @@ TEST(GravityFloat, MaximumJump) {
 }
 
 TEST(GravityFloat, GetChoiceOfCase) {
-  FAIL() << "finish the test";
+  GravityContext ctx;
+  ctx.Dmax = 2;
+  ctx.Nmax.push_back(3);
+  ctx.Nmax.push_back(2);
+  ctx.Nmax.push_back(1);
+  ctx.Nmax.push_back(0);
+
+  int choice;
+
+  choice = get_choice_of_case(ctx);
+  ASSERT_EQ(7, choice);
+
+  ctx.Dmax = 8;
+  ctx.Kmax = 0;
+  choice = get_choice_of_case(ctx);
+  ASSERT_NE(7, choice);
+  ASSERT_NE(-1, choice);
+  ASSERT_EQ(3, choice);
+
+  ctx.Kmax = 2;
+  choice = get_choice_of_case(ctx);
+  ASSERT_EQ(0, choice);
+
+  ctx.Kmax = 1;
+  ctx.Nmax[0] = 0;
+  ctx.Nmax[1] = 1;
+  choice = get_choice_of_case(ctx);
+  ASSERT_EQ(5, choice);
+
+  ctx.Nmax[0] = 2;
+  ctx.Nmax[1] = 3;
+  choice = get_choice_of_case(ctx);
+  ASSERT_EQ(5, choice);
+
+  ctx.Nmax[0] = 0;
+  ctx.Nmax[1] = 2;
+  choice = get_choice_of_case(ctx);
+  ASSERT_EQ(6, choice);
+
+  ctx.Nmax[0] = 1;
+  ctx.Nmax[1] = 3;
+  choice = get_choice_of_case(ctx);
+  ASSERT_EQ(6, choice);
+
+  ctx.Kmax = 3;
+  ctx.Nmax[0] = 0;
+  ctx.Nmax[1] = 3;
+  choice = get_choice_of_case(ctx);
+  ASSERT_EQ(7, choice);
 }

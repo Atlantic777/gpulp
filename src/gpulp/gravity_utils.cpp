@@ -111,5 +111,30 @@ void gpulp::maximum_jump(std::vector<unsigned char> &diffs,
 }
 
 int gpulp::get_choice_of_case(GravityContext &ctx) {
-  return 0;
+  int cas = -1;
+
+  if(ctx.Dmax < 8) {
+    cas = 7;
+  }
+  else if(ctx.Kmax == 0) {
+    cas = ctx.Nmax[0];
+  }
+  else if(ctx.Kmax == 2) {
+    cas = ctx.Nmax[3];
+  }
+  else {
+    if((ctx.Nmax[0] == 0 && ctx.Nmax[1] == 1) ||
+       (ctx.Nmax[0] == 2 && ctx.Nmax[1] == 3)) {
+      cas = 5;
+    }
+    else if((ctx.Nmax[0] == 0 && ctx.Nmax[1] == 2) ||
+            (ctx.Nmax[0] == 1 && ctx.Nmax[1] == 3)) {
+      cas = 6;
+    }
+    else {
+      cas = 7;
+    }
+  }
+
+  return cas;
 }
