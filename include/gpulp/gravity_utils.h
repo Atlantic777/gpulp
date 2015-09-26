@@ -10,9 +10,11 @@ namespace gpulp {
 
   struct GravityContext {
     InterpolationContext interpolationCtx;
-    int Dmax;
-    int Kmax;
-    std::vector<int> Nmax;
+    int Dmax; // value of max diff
+    int Kmax; // idx of max diff
+    std::vector<int> Nmax; // sorted indexes
+    std::vector<float> dst;
+    int cas;
   };
 
   PixelArr sort_pixels(InterpolationContext &ctx);
@@ -21,6 +23,7 @@ namespace gpulp {
   std::vector<unsigned char> diff_pixels(PixelArr &pixels);
   void maximum_jump(std::vector<unsigned char> &diffs, int &Dmax, int &Kmax);
   int get_choice_of_case(GravityContext &ctx);
+  std::vector<float> get_weights(GravityContext &ctx);
 }
 
 #endif

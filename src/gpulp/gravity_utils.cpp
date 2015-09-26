@@ -136,5 +136,80 @@ int gpulp::get_choice_of_case(GravityContext &ctx) {
     }
   }
 
+  ctx.cas = cas;
+
   return cas;
+}
+
+std::vector<float> gpulp::get_weights(GravityContext &ctx) {
+  std::vector<float> w(4, 0);
+
+  if(ctx.cas == 0) {
+    if(ctx.interpolationCtx.dy < (0.5 - ctx.interpolationCtx.dx)) {
+      w[0] = 1;
+    }
+    else {
+      w[1] = ctx.dst[2] * ctx.dst[3];
+      w[2] = ctx.dst[1] * ctx.dst[3];
+      w[3] = ctx.dst[1] * ctx.dst[2];
+    }
+  }
+  else if(ctx.cas == 1) {
+    if(ctx.interpolationCtx.dy < 0.5 - ctx.interpolationCtx.dx) {
+      w[1] = 1;
+    }
+    else {
+      w[0] = ctx.dst[2]*ctx.dst[3];
+      w[2] = ctx.dst[0]*ctx.dst[3];
+      w[3] = ctx.dst[0]*ctx.dst[2];
+    }
+  }
+  else if(ctx.cas == 2) {
+    if(ctx.interpolationCtx.dy > 0.5 + ctx.interpolationCtx.dx) {
+      w[2] = 1;
+    }
+    else {
+      w[0] = ctx.dst[1]*ctx.dst[3];
+      w[1] = ctx.dst[0]*ctx.dst[3];
+      w[3] = ctx.dst[0]*ctx.dst[1];
+    }
+  }
+  else if(ctx.cas == 3) {
+    if(ctx.interpolationCtx.dy > 1.5 - ctx.interpolationCtx.dx) {
+      w[3] = 1;
+    }
+    else {
+      w[0] = ctx.dst[1]*ctx.dst[2];
+      w[1] = ctx.dst[0]*ctx.dst[2];
+      w[2] = ctx.dst[0]*ctx.dst[1];
+    }
+  }
+  else if(ctx.cas == 5) {
+    if(ctx.interpolationCtx.dy < 0.5) {
+      w[0] = ctx.dst[1];
+      w[1] = ctx.dst[0];
+    }
+    else {
+      w[2] = ctx.dst[3];
+      w[3] = ctx.dst[2];
+    }
+  }
+  else if(ctx.cas == 6) {
+    if(ctx.interpolationCtx.dx < 0.5) {
+      w[0] = ctx.dst[2];
+      w[2] = ctx.dst[0];
+    }
+    else {
+      w[1] = ctx.dst[3];
+      w[3] = ctx.dst[1];
+    }
+  }
+  else {
+    w[0] = ctx.dst[1]*ctx.dst[2]*ctx.dst[3];
+    w[1] = ctx.dst[0]*ctx.dst[2]*ctx.dst[3];
+    w[2] = ctx.dst[0]*ctx.dst[1]*ctx.dst[3];
+    w[3] = ctx.dst[0]*ctx.dst[1]*ctx.dst[2];
+  }
+
+  return w;
 }

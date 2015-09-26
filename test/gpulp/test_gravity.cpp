@@ -138,3 +138,119 @@ TEST(GravityFloat, GetChoiceOfCase) {
   choice = get_choice_of_case(ctx);
   ASSERT_EQ(7, choice);
 }
+
+TEST(GravityFloat, GetInterpolationCoeffs) {
+  GravityContext ctx;
+
+  ctx.cas = 0;
+  ctx.interpolationCtx.dx = 0.2;
+  ctx.interpolationCtx.dy = 0.1;
+
+  std::vector<float> w = get_weights(ctx);
+  ASSERT_EQ(4, w.size());
+  ASSERT_FLOAT_EQ(1, w[0]);
+  ASSERT_FLOAT_EQ(0, w[1]);
+  ASSERT_FLOAT_EQ(0, w[2]);
+  ASSERT_FLOAT_EQ(0, w[3]);
+
+  ctx.interpolationCtx.dy = 0.5;
+  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
+  w = get_weights(ctx);
+
+  ASSERT_FLOAT_EQ(0, w[0]);
+  ASSERT_FLOAT_EQ(0.29*0.89, w[1]);
+  ASSERT_FLOAT_EQ(0.89*0.89, w[2]);
+  ASSERT_FLOAT_EQ(0.89*0.29, w[3]);
+
+  ctx.cas = 1;
+  ctx.interpolationCtx.dy = 0.1;
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0, w[0]);
+  ASSERT_FLOAT_EQ(1, w[1]);
+  ASSERT_FLOAT_EQ(0, w[2]);
+  ASSERT_FLOAT_EQ(0, w[3]);
+
+  ctx.interpolationCtx.dy = 0.5;
+  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0.29*0.89, w[0]);
+  ASSERT_FLOAT_EQ(0, w[1]);
+  ASSERT_FLOAT_EQ(0.29*0.89, w[2]);
+  ASSERT_FLOAT_EQ(0.29*0.29, w[3]);
+
+  ctx.cas = 2;
+  ctx.interpolationCtx.dy = 0.9;
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0, w[0]);
+  ASSERT_FLOAT_EQ(0, w[1]);
+  ASSERT_FLOAT_EQ(1, w[2]);
+  ASSERT_FLOAT_EQ(0, w[3]);
+
+  ctx.interpolationCtx.dy = 0.5;
+  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0.89*0.89, w[0]);
+  ASSERT_FLOAT_EQ(0.29*0.89, w[1]);
+  ASSERT_FLOAT_EQ(0, w[2]);
+  ASSERT_FLOAT_EQ(0.29*0.89, w[3]);
+
+  ctx.cas = 3;
+  ctx.interpolationCtx.dx = 1;
+  ctx.interpolationCtx.dy = 0.7;
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0, w[0]);
+  ASSERT_FLOAT_EQ(0, w[1]);
+  ASSERT_FLOAT_EQ(0, w[2]);
+  ASSERT_FLOAT_EQ(1, w[3]);
+
+  ctx.interpolationCtx.dx = 0.2;
+  ctx.interpolationCtx.dy = 0.5;
+  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0.89*0.29, w[0]);
+  ASSERT_FLOAT_EQ(0.29*0.29, w[1]);
+  ASSERT_FLOAT_EQ(0.29*0.89, w[2]);
+  ASSERT_FLOAT_EQ(0, w[3]);
+
+  ctx.cas = 5;
+  ctx.interpolationCtx.dy = 0.2;
+  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0.68, w[0]);
+  ASSERT_FLOAT_EQ(0.08, w[1]);
+  ASSERT_FLOAT_EQ(0, w[2]);
+  ASSERT_FLOAT_EQ(0, w[3]);
+
+  ctx.interpolationCtx.dy = 0.8;
+  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0, w[0]);
+  ASSERT_FLOAT_EQ(0, w[1]);
+  ASSERT_FLOAT_EQ(0.68, w[2]);
+  ASSERT_FLOAT_EQ(0.08, w[3]);
+
+  ctx.cas = 6;
+  ctx.interpolationCtx.dx = 0.2;
+  ctx.interpolationCtx.dy = 0.5;
+  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0.29, w[0]);
+  ASSERT_FLOAT_EQ(0, w[1]);
+  ASSERT_FLOAT_EQ(0.29, w[2]);
+  ASSERT_FLOAT_EQ(0, w[3]);
+
+  ctx.interpolationCtx.dx = 0.8;
+  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0, w[0]);
+  ASSERT_FLOAT_EQ(0.29, w[1]);
+  ASSERT_FLOAT_EQ(0, w[2]);
+  ASSERT_FLOAT_EQ(0.29, w[3]);
+
+  ctx.cas = 7;
+  w = get_weights(ctx);
+  ASSERT_FLOAT_EQ(0.29*0.89*0.29, w[0]);
+  ASSERT_FLOAT_EQ(0.89*0.89*0.29, w[1]);
+  ASSERT_FLOAT_EQ(0.89*0.29*0.29, w[2]);
+  ASSERT_FLOAT_EQ(0.89*0.29*0.89, w[3]);
+}
