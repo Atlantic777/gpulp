@@ -21,14 +21,33 @@ TEST(GravityFloat, GetGravityDistances) {
 
 TEST(GravityFloat, SortPixels) {
   InterpolationContext ctx;
-  std::vector<PixelMono> s = sort_pixels(ctx);
+  ctx.a = new PixelMono(40);
+  ctx.b = new PixelMono(30);
+  ctx.c = new PixelMono(20);
+  ctx.d = new PixelMono(10);
 
-  FAIL() << "finish test";
+  std::vector<Pixel*> s = sort_pixels(ctx);
+
+  ASSERT_EQ(4, s.size());
+
+  for(int i = 1; i <= 4; i++) {
+    EXPECT_EQ(i*10, s[i-1]->getData()[0]);
+  }
+
 }
 
 TEST(GravityFloat, ArgSortixels) {
   InterpolationContext ctx;
-  std::vector<int> args = arg_sort_pixels(ctx);
+  ctx.a = new PixelMono(40);
+  ctx.b = new PixelMono(30);
+  ctx.c = new PixelMono(20);
+  ctx.d = new PixelMono(10);
 
-  FAIL() << "finish test";
+  std::vector<int> s = arg_sort_pixels(ctx);
+
+  ASSERT_EQ(4, s.size());
+
+  for(int i = 0; i < 4; i++) {
+    EXPECT_EQ(3-i, s[i]);
+  }
 }

@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace gpulp {
-  std::vector<PixelMono> sort_pixels(InterpolationContext &ctx);
+  std::vector<Pixel*> sort_pixels(InterpolationContext &ctx);
   std::vector<int> arg_sort_pixels(InterpolationContext &ctx);
   std::vector<float> get_gravity_distances(InterpolationContext &ctx);
 }
