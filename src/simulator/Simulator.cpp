@@ -4,6 +4,18 @@
 
 using namespace gpulp;
 
+Simulator::Simulator(std::string algorithm, std::string mathlib) {
+  this->algorithm = algorithm;
+  this->mathlib = mathlib;
+
+  if(algorithm == "bilinear") {
+    p = new PainterBilinearFloat();
+  }
+  else if(algorithm == "gravity") {
+    p = new PainterGravityFloat();
+  }
+}
+
 void Simulator::setScene(Scene *s) {
   scene = s;
   fb = FrameBuffer::create(scene->size, scene->channels);
@@ -18,7 +30,5 @@ FrameBuffer* Simulator::render() {
 }
 
 void Simulator::renderOne(GUIObject obj) {
-  PainterBilinearFloat p;
-  // PainterGravityFloat p;
-  p.render(*fb, obj);
+  p->render(*fb, obj);
 }

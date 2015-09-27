@@ -6,7 +6,7 @@
 using namespace std;
 
 int main() {
-  TextureMono t = LoadTexture("/home/nikola/code/gpulp/res/compiling.pn");
+  TextureMono t = LoadTexture("/home/nikola/code/gpulp/res/compiling.png");
 
   GUIObject obj;
   obj.location = Location(0, 0);
@@ -17,7 +17,7 @@ int main() {
   Scene scene(obj.size, ch_mono);
   scene.addObject(obj);
 
-  Simulator sim;
+  Simulator sim("gravity", "float");
   sim.setScene(&scene);
 
   FrameBuffer *fb = sim.render();
