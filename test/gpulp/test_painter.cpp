@@ -107,15 +107,26 @@ TEST(PainterBilinearFixed, GetInterpolationContextFloat) {
   FrameBufferMono fb = FrameBufferMono(Size(10, 10));
   GUIObject obj = get_object(Size(2, 2), Size(4, 4));
   PainterBilinearFixed pbf;
-  InterpolationContextFloat ctx;
+  InterpolationContextFixed ctx;
+  InterpolationContextFloat fctx;
 
-  // ctx = pbf.getInterpolationContext(Location(0, 0), fb, obj);
-  // test_interpolation_context_1(ctx);
+  ctx = pbf.getInterpolationContext(Location(0, 0), fb, obj);
+  fctx.a = ctx.a;
+  fctx.b = ctx.b;
+  fctx.c = ctx.c;
+  fctx.d = ctx.d;
+  fctx.dx = from_fixed(ctx.dx);
+  fctx.dy = from_fixed(ctx.dy);
+  test_interpolation_context_1(fctx);
 
-  // ctx = pbf.getInterpolationContext(Location(2, 0), fb, obj);
-  // test_interpolation_context_2(ctx);
-  //
-  FAIL() << "fix this test";
+  ctx = pbf.getInterpolationContext(Location(2, 0), fb, obj);
+  fctx.a = ctx.a;
+  fctx.b = ctx.b;
+  fctx.c = ctx.c;
+  fctx.d = ctx.d;
+  fctx.dx = from_fixed(ctx.dx);
+  fctx.dy = from_fixed(ctx.dy);
+  test_interpolation_context_2(fctx);
 }
 
 TEST(PainterBilinearFixed, Blit) {
