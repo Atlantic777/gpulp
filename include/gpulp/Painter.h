@@ -25,7 +25,9 @@ class PainterBilinearFloat : public Painter {
 
 class PainterBilinearFixed : public Painter {
   private:
-    void stretchBlit() {}
+    InterpolationContext getInterpolationContext(Location l,
+        FrameBuffer &fb, GUIObject &obj);
+    void stretchBlit(FrameBuffer &fb, GUIObject obj);
 };
 
 class PainterGravityFloat : public Painter {

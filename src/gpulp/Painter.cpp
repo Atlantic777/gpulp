@@ -38,10 +38,6 @@ void PainterBilinearFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
   for(int col = 0; col < obj.size.width; col++) {
     for(int row = 0; row < obj.size.height; row++) {
       ctx = getInterpolationContext(Location(col, row), fb, obj);
-      // printf("%p\n", ctx.a);
-      // printf("%p\n", ctx.b);
-      // printf("%p\n", ctx.c);
-      // printf("%p\n", ctx.d);
 
       PixelMono q1(
         ctx.a->getData()[0]*(1-ctx.dx) +
@@ -66,22 +62,12 @@ void PainterGravityFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
   for(int col = 0; col < obj.size.width; col++) {
     for(int row = 0; row < obj.size.height; row++) {
       ctx = getInterpolationContext(Location(col, row), fb, obj);
-      // printf("%p\n", ctx.a);
-      // printf("%p\n", ctx.b);
-      // printf("%p\n", ctx.c);
-      // printf("%p\n", ctx.d);
 
       PixelMono p = doInterpolation(ctx);
       fb.write(col, row, p);
     }
   }
 }
-
-// PixelMono PainterGravityFloat::interpolate(InterpolationContext &ctx) {
-//   PixelMono p = doInterpolation(ctx);
-//
-//   return p;
-// }
 
 InterpolationContext Painter::getInterpolationContext(Location l,
     FrameBuffer &fb, GUIObject &obj) {
@@ -119,4 +105,14 @@ InterpolationContext Painter::getInterpolationContext(Location l,
   ctx.dy = y_diff;
 
   return ctx;
+}
+
+InterpolationContext PainterBilinearFixed::getInterpolationContext(Location l,
+    FrameBuffer &fb, GUIObject &obj) {
+  puts("fixed ctx");
+}
+
+void PainterBilinearFixed::stretchBlit(FrameBuffer &fb, GUIObject obj) {
+  getInterpolationContext(Location(0, 0), fb, obj);
+  puts("here");
 }
