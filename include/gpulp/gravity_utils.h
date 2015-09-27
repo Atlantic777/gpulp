@@ -15,6 +15,7 @@ namespace gpulp {
     std::vector<int> Nmax; // sorted indexes
     std::vector<float> dst;
     int cas;
+    std::vector<float> w;
   };
 
   PixelArr sort_pixels(InterpolationContext &ctx);
@@ -25,6 +26,8 @@ namespace gpulp {
   int get_choice_of_case(GravityContext &ctx);
   std::vector<float> get_weights(GravityContext &ctx);
   std::vector<float> normalize_weights(std::vector<float> &w);
+  GravityContext get_gravity_ctx(InterpolationContext &iCtx);
+  PixelMono doInterpolation(InterpolationContext &ctx);
 }
 
 #endif

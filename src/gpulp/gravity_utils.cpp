@@ -226,3 +226,31 @@ std::vector<float> gpulp::normalize_weights(std::vector<float> &w) {
 
   return w;
 }
+
+GravityContext gpulp::get_gravity_ctx(InterpolationContext &iCtx) {
+  GravityContext ctx;
+
+  ctx.interpolationCtx = iCtx;
+  ctx.dst = get_gravity_distances(iCtx);
+  PixelArr sorted = sort_pixels(iCtx);
+  std::vector<unsigned char> diffs = diff_pixels(sorted);
+  maximum_jump(diffs, ctx.Dmax, ctx.Kmax);
+  ctx.Nmax = arg_sort_pixels(iCtx);
+  ctx.cas = get_choice_of_case(ctx);
+  ctx.w = get_weights(ctx);
+  ctx.w = normalize_weights(ctx.w);
+
+  return ctx;
+}
+
+PixelMono gpulp::doInterpolation(InterpolationContext &iCtx) {
+  GravityContext ctx = get_gravity_ctx(iCtx);
+
+  unsigned char val;
+  val += ctx.w[0]*ctx.interpolationCtx.a->getData()[0];
+  val += ctx.w[1]*ctx.interpolationCtx.b->getData()[0];
+  val += ctx.w[2]*ctx.interpolationCtx.c->getData()[0];
+  val += ctx.w[3]*ctx.interpolationCtx.d->getData()[0];
+
+  return PixelMono(val);
+}

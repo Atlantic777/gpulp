@@ -263,3 +263,47 @@ TEST(GravityFloat, NormalizeWeights) {
     ASSERT_EQ(0.25, w[i]);
   }
 }
+
+TEST(GravityFloat, PrepareGravityCtx) {
+  InterpolationContext iCtx;
+
+  iCtx.a = new PixelMono(255);
+  iCtx.b = new PixelMono(0);
+  iCtx.c = new PixelMono(0);
+  iCtx.d = new PixelMono(0);
+
+  iCtx.dx = 0.2;
+  iCtx.dy = 0.2;
+
+  GravityContext ctx = get_gravity_ctx(iCtx);
+  ASSERT_FLOAT_EQ(0.08, ctx.dst[0]);
+  ASSERT_FLOAT_EQ(0.68, ctx.dst[1]);
+  ASSERT_FLOAT_EQ(0.68, ctx.dst[2]);
+  ASSERT_FLOAT_EQ(1.28, ctx.dst[3]);
+
+  ASSERT_EQ(255, ctx.Dmax);
+  ASSERT_EQ(2, ctx.Kmax);
+
+  ASSERT_EQ(0, ctx.Nmax[3]);
+  ASSERT_EQ(0, ctx.cas);
+
+  ASSERT_FLOAT_EQ(1, ctx.w[0]);
+  ASSERT_FLOAT_EQ(0, ctx.w[1]);
+  ASSERT_FLOAT_EQ(0, ctx.w[2]);
+  ASSERT_FLOAT_EQ(0, ctx.w[3]);
+}
+
+TEST(GravityFloat, DoInterpolation) {
+  InterpolationContext iCtx;
+
+  iCtx.a = new PixelMono(255);
+  iCtx.b = new PixelMono(0);
+  iCtx.c = new PixelMono(0);
+  iCtx.d = new PixelMono(0);
+
+  iCtx.dx = 0.2;
+  iCtx.dy = 0.2;
+
+  PixelMono p = doInterpolation(iCtx);
+  ASSERT_EQ(255, p.getData()[0]);
+}
