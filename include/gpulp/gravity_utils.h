@@ -4,6 +4,7 @@
 #include "gpulp/gpulp_utils.h"
 #include "gpulp/InterpolationContext.h"
 #include <vector>
+#include "gpulp/fixed_point.h"
 
 namespace gpulp {
   typedef std::vector<Pixel*> PixelArr;
@@ -28,6 +29,14 @@ namespace gpulp {
   std::vector<float> normalize_weights(std::vector<float> &w);
   GravityContextFloat get_gravity_ctx(InterpolationContextFloat &iCtx);
   PixelMono doInterpolation(InterpolationContextFloat &ctx);
+
+  // float lib dependant
+  // --------------------
+  // get_gravity_distances
+  // get_weights
+  // normalize_weigths - division, important!
+  // of course, doInterpolation() too
+  // std::vector<FPNum> get_gravity_distances(InterpolationContextFixed &ctx);
 }
 
 #endif
