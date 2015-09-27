@@ -8,8 +8,8 @@
 namespace gpulp {
   typedef std::vector<Pixel*> PixelArr;
 
-  struct GravityContext {
-    InterpolationContext interpolationCtx;
+  struct GravityContextFloat {
+    InterpolationContextFloat interpolationCtx;
     int Dmax; // value of max diff
     int Kmax; // idx of max diff
     std::vector<int> Nmax; // sorted indexes
@@ -18,16 +18,16 @@ namespace gpulp {
     std::vector<float> w;
   };
 
-  PixelArr sort_pixels(InterpolationContext &ctx);
-  std::vector<int> arg_sort_pixels(InterpolationContext &ctx);
-  std::vector<float> get_gravity_distances(InterpolationContext &ctx);
+  PixelArr sort_pixels(InterpolationContextFloat &ctx);
+  std::vector<int> arg_sort_pixels(InterpolationContextFloat &ctx);
+  std::vector<float> get_gravity_distances(InterpolationContextFloat &ctx);
   std::vector<unsigned char> diff_pixels(PixelArr &pixels);
   void maximum_jump(std::vector<unsigned char> &diffs, int &Dmax, int &Kmax);
-  int get_choice_of_case(GravityContext &ctx);
-  std::vector<float> get_weights(GravityContext &ctx);
+  int get_choice_of_case(GravityContextFloat &ctx);
+  std::vector<float> get_weights(GravityContextFloat &ctx);
   std::vector<float> normalize_weights(std::vector<float> &w);
-  GravityContext get_gravity_ctx(InterpolationContext &iCtx);
-  PixelMono doInterpolation(InterpolationContext &ctx);
+  GravityContextFloat get_gravity_ctx(InterpolationContextFloat &iCtx);
+  PixelMono doInterpolation(InterpolationContextFloat &ctx);
 }
 
 #endif

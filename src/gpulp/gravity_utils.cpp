@@ -6,7 +6,7 @@ using namespace gpulp;
 typedef std::pair<Pixel*, int> PixelPair;
 typedef std::deque<PixelPair> PixelPairArr;
 
-PixelPairArr pixel_pair_sort(InterpolationContext &ctx){
+PixelPairArr pixel_pair_sort(InterpolationContextFloat &ctx){
   PixelPairArr sorted;
   PixelPairArr firstHalf;
   PixelPairArr secondHalf;
@@ -52,7 +52,7 @@ PixelPairArr pixel_pair_sort(InterpolationContext &ctx){
   return sorted;
 }
 
-PixelArr gpulp::sort_pixels(InterpolationContext &ctx) {
+PixelArr gpulp::sort_pixels(InterpolationContextFloat &ctx) {
   std::vector<Pixel*> parr;
   PixelPairArr pairs = pixel_pair_sort(ctx);
 
@@ -63,7 +63,7 @@ PixelArr gpulp::sort_pixels(InterpolationContext &ctx) {
   return parr;
 }
 
-std::vector<int> gpulp::arg_sort_pixels(InterpolationContext &ctx) {
+std::vector<int> gpulp::arg_sort_pixels(InterpolationContextFloat &ctx) {
   std::vector<int> args;
   PixelPairArr pairs = pixel_pair_sort(ctx);
 
@@ -74,7 +74,7 @@ std::vector<int> gpulp::arg_sort_pixels(InterpolationContext &ctx) {
   return args;
 }
 
-std::vector<float> gpulp::get_gravity_distances(InterpolationContext &ctx) {
+std::vector<float> gpulp::get_gravity_distances(InterpolationContextFloat &ctx) {
   std::vector<float> dst;
 
   dst.push_back(pow(ctx.dx, 2) + pow(ctx.dy, 2));
@@ -110,7 +110,7 @@ void gpulp::maximum_jump(std::vector<unsigned char> &diffs,
   }
 }
 
-int gpulp::get_choice_of_case(GravityContext &ctx) {
+int gpulp::get_choice_of_case(GravityContextFloat &ctx) {
   int cas = -1;
 
   if(ctx.Dmax < 8) {
@@ -141,7 +141,7 @@ int gpulp::get_choice_of_case(GravityContext &ctx) {
   return cas;
 }
 
-std::vector<float> gpulp::get_weights(GravityContext &ctx) {
+std::vector<float> gpulp::get_weights(GravityContextFloat &ctx) {
   std::vector<float> w(4, 0);
 
   if(ctx.cas == 0) {
@@ -227,8 +227,8 @@ std::vector<float> gpulp::normalize_weights(std::vector<float> &w) {
   return w;
 }
 
-GravityContext gpulp::get_gravity_ctx(InterpolationContext &iCtx) {
-  GravityContext ctx;
+GravityContextFloat gpulp::get_gravity_ctx(InterpolationContextFloat &iCtx) {
+  GravityContextFloat ctx;
 
   ctx.interpolationCtx = iCtx;
   ctx.dst = get_gravity_distances(iCtx);
@@ -243,8 +243,8 @@ GravityContext gpulp::get_gravity_ctx(InterpolationContext &iCtx) {
   return ctx;
 }
 
-PixelMono gpulp::doInterpolation(InterpolationContext &iCtx) {
-  GravityContext ctx = get_gravity_ctx(iCtx);
+PixelMono gpulp::doInterpolation(InterpolationContextFloat &iCtx) {
+  GravityContextFloat ctx = get_gravity_ctx(iCtx);
 
   unsigned char val;
   val += ctx.w[0]*ctx.interpolationCtx.a->getData()[0];

@@ -33,7 +33,7 @@ void Painter::blit(FrameBuffer &fb, GUIObject obj) {
 }
 
 void PainterBilinearFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
-  InterpolationContext ctx;
+  InterpolationContextFloat ctx;
 
   for(int col = 0; col < obj.size.width; col++) {
     for(int row = 0; row < obj.size.height; row++) {
@@ -57,7 +57,7 @@ void PainterBilinearFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
 }
 
 void PainterGravityFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
-  InterpolationContext ctx;
+  InterpolationContextFloat ctx;
 
   for(int col = 0; col < obj.size.width; col++) {
     for(int row = 0; row < obj.size.height; row++) {
@@ -69,9 +69,9 @@ void PainterGravityFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
   }
 }
 
-InterpolationContext Painter::getInterpolationContext(Location l,
+InterpolationContextFloat Painter::getInterpolationContext(Location l,
     FrameBuffer &fb, GUIObject &obj) {
-  InterpolationContext ctx;
+  InterpolationContextFloat ctx;
 
   int w = obj.texture.size.width;
   int h = obj.texture.size.height;
@@ -107,9 +107,9 @@ InterpolationContext Painter::getInterpolationContext(Location l,
   return ctx;
 }
 
-InterpolationContext PainterBilinearFixed::getInterpolationContext(Location l,
+InterpolationContextFixed PainterBilinearFixed::getInterpolationContext(Location l,
     FrameBuffer &fb, GUIObject &obj) {
-  InterpolationContext ctx;
+  InterpolationContextFixed ctx;
 
   FPNum w = to_fixed(obj.texture.size.width);
   FPNum h = to_fixed(obj.texture.size.height);
@@ -149,5 +149,25 @@ InterpolationContext PainterBilinearFixed::getInterpolationContext(Location l,
 }
 
 void PainterBilinearFixed::stretchBlit(FrameBuffer &fb, GUIObject obj) {
-  getInterpolationContext(Location(0, 0), fb, obj);
+  InterpolationContextFixed ctx;
+
+  for(int col = 0; col < obj.size.width; col++) {
+    for(int row = 0; row < obj.size.height; row++) {
+      ctx = getInterpolationContext(Location(col, row), fb, obj);
+
+      PixelMono q1(
+        ctx.a->getData()[0]*(1-ctx.dx) +
+        ctx.b->getData()[0]*(ctx.dx));
+
+      PixelMono q2(
+        ctx.c->getData()[0]*(1-ctx.dx) +
+        ctx.d->getData()[0]*(ctx.dx));
+
+      PixelMono p(
+          q1.getData()[0]*(1-ctx.dy) +
+          q2.getData()[0]*ctx.dy);
+
+      fb.write(col, row, p);
+    }
+  }
 }

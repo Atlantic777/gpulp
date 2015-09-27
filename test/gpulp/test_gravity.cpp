@@ -5,7 +5,7 @@
 using namespace gpulp;
 
 TEST(GravityFloat, GetGravityDistances) {
-  InterpolationContext ctx;
+  InterpolationContextFloat ctx;
   ctx.dx = 0.2;
   ctx.dy = 0.4;
 
@@ -20,7 +20,7 @@ TEST(GravityFloat, GetGravityDistances) {
 }
 
 TEST(GravityFloat, SortPixels) {
-  InterpolationContext ctx;
+  InterpolationContextFloat ctx;
   ctx.a = new PixelMono(40);
   ctx.b = new PixelMono(30);
   ctx.c = new PixelMono(20);
@@ -37,7 +37,7 @@ TEST(GravityFloat, SortPixels) {
 }
 
 TEST(GravityFloat, ArgSortixels) {
-  InterpolationContext ctx;
+  InterpolationContextFloat ctx;
   ctx.a = new PixelMono(40);
   ctx.b = new PixelMono(30);
   ctx.c = new PixelMono(20);
@@ -88,7 +88,7 @@ TEST(GravityFloat, MaximumJump) {
 }
 
 TEST(GravityFloat, GetChoiceOfCase) {
-  GravityContext ctx;
+  GravityContextFloat ctx;
   ctx.Dmax = 2;
   ctx.Nmax.push_back(3);
   ctx.Nmax.push_back(2);
@@ -140,7 +140,7 @@ TEST(GravityFloat, GetChoiceOfCase) {
 }
 
 TEST(GravityFloat, GetInterpolationCoeffs) {
-  GravityContext ctx;
+  GravityContextFloat ctx;
 
   ctx.cas = 0;
   ctx.interpolationCtx.dx = 0.2;
@@ -265,7 +265,7 @@ TEST(GravityFloat, NormalizeWeights) {
 }
 
 TEST(GravityFloat, PrepareGravityCtx) {
-  InterpolationContext iCtx;
+  InterpolationContextFloat iCtx;
 
   iCtx.a = new PixelMono(255);
   iCtx.b = new PixelMono(0);
@@ -275,7 +275,7 @@ TEST(GravityFloat, PrepareGravityCtx) {
   iCtx.dx = 0.2;
   iCtx.dy = 0.2;
 
-  GravityContext ctx = get_gravity_ctx(iCtx);
+  GravityContextFloat ctx = get_gravity_ctx(iCtx);
   ASSERT_FLOAT_EQ(0.08, ctx.dst[0]);
   ASSERT_FLOAT_EQ(0.68, ctx.dst[1]);
   ASSERT_FLOAT_EQ(0.68, ctx.dst[2]);
@@ -294,7 +294,7 @@ TEST(GravityFloat, PrepareGravityCtx) {
 }
 
 TEST(GravityFloat, DoInterpolation) {
-  InterpolationContext iCtx;
+  InterpolationContextFloat iCtx;
 
   iCtx.a = new PixelMono(255);
   iCtx.b = new PixelMono(0);

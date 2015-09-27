@@ -22,7 +22,7 @@ void test_blit(FrameBufferMono &fb) {
   }
 }
 
-void test_interpolation_context_1(InterpolationContext &ctx) {
+void test_interpolation_context_1(InterpolationContextFloat &ctx) {
   ASSERT_FALSE(ctx.a == NULL);
   ASSERT_FALSE(ctx.b == NULL);
   ASSERT_FALSE(ctx.c == NULL);
@@ -34,7 +34,7 @@ void test_interpolation_context_1(InterpolationContext &ctx) {
   ASSERT_EQ(255, ctx.d->getData()[0]);
 }
 
-void test_interpolation_context_2(InterpolationContext &ctx) {
+void test_interpolation_context_2(InterpolationContextFloat &ctx) {
   ASSERT_FALSE(ctx.a == NULL);
   ASSERT_FALSE(ctx.b == NULL);
   ASSERT_FALSE(ctx.c == NULL);
@@ -80,11 +80,11 @@ TEST(PainterBilinearFloat, Blit) {
   test_blit(fb);
 }
 
-TEST(PainterBilinearFloat, GetInterpolationContext) {
+TEST(PainterBilinearFloat, GetInterpolationContextFloat) {
   FrameBufferMono fb = FrameBufferMono(Size(10, 10));
   GUIObject obj = get_object(Size(2, 2), Size(4, 4));
   PainterBilinearFloat pbf;
-  InterpolationContext ctx;
+  InterpolationContextFloat ctx;
 
   ctx = pbf.getInterpolationContext(Location(0, 0), fb, obj);
   test_interpolation_context_1(ctx);
@@ -103,15 +103,37 @@ TEST(PainterBilinearFloat, StretchBlit) {
   test_stretch_blit(fb);
 }
 
-TEST(PainterBilinearFixed, GetInterpolationContext) {
+TEST(PainterBilinearFixed, GetInterpolationContextFloat) {
   FrameBufferMono fb = FrameBufferMono(Size(10, 10));
   GUIObject obj = get_object(Size(2, 2), Size(4, 4));
   PainterBilinearFixed pbf;
-  InterpolationContext ctx;
+  InterpolationContextFloat ctx;
 
-  ctx = pbf.getInterpolationContext(Location(0, 0), fb, obj);
-  test_interpolation_context_1(ctx);
+  // ctx = pbf.getInterpolationContext(Location(0, 0), fb, obj);
+  // test_interpolation_context_1(ctx);
 
-  ctx = pbf.getInterpolationContext(Location(2, 0), fb, obj);
-  test_interpolation_context_2(ctx);
+  // ctx = pbf.getInterpolationContext(Location(2, 0), fb, obj);
+  // test_interpolation_context_2(ctx);
+  //
+  FAIL() << "fix this test";
+}
+
+TEST(PainterBilinearFixed, Blit) {
+  FrameBufferMono fb(Size(100, 100));
+  GUIObject obj = get_object(Size(10, 10), Size(10, 10), Location(0, 90));
+
+  PainterBilinearFixed p;
+  p.render(fb, obj);
+
+  test_blit(fb);
+}
+
+TEST(PainterBilinearFixed, StretchBlit) {
+  FrameBufferMono fb(Size(10, 10));
+  GUIObject obj = get_object(Size(2, 2), Size(4, 4));
+
+  PainterBilinearFixed p;
+  p.render(fb, obj);
+
+  test_stretch_blit(fb);
 }

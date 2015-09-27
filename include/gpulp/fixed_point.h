@@ -16,14 +16,6 @@ namespace gpulp {
   FPNum to_fixed(float a);
   float from_fixed(FPNum);
   FPNum mul(FPNum a, FPNum b);
-
-  // int get_whole_int(FPNum f) {
-  //   return  f >> L_BITS;
-  // }
-
-  // FPNum get_remainder(FPNum f) {
-  //   return f & L_BITS;
-  // }
 }
 
 #endif

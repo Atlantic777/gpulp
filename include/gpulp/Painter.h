@@ -12,7 +12,7 @@ namespace gpulp {
 class Painter {
   public:
     void render(FrameBuffer &fb, GUIObject obj);
-    InterpolationContext getInterpolationContext(Location l,
+    InterpolationContextFloat getInterpolationContext(Location l,
         FrameBuffer &fb, GUIObject &obj);
   private:
     void blit(FrameBuffer &fb, GUIObject obj);
@@ -26,7 +26,7 @@ class PainterBilinearFloat : public Painter {
 
 class PainterBilinearFixed : public Painter {
   public:
-    InterpolationContext getInterpolationContext(Location l,
+    InterpolationContextFixed getInterpolationContext(Location l,
         FrameBuffer &fb, GUIObject &obj);
   private:
     void stretchBlit(FrameBuffer &fb, GUIObject obj);
@@ -35,7 +35,7 @@ class PainterBilinearFixed : public Painter {
 class PainterGravityFloat : public Painter {
   private:
     void stretchBlit(FrameBuffer &fb, GUIObject obj);
-    PixelMono interpolate(InterpolationContext &ctx);
+    PixelMono interpolate(InterpolationContextFloat &ctx);
 };
 
 class PainterGravityFixed : public Painter {
