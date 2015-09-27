@@ -20,6 +20,7 @@ set(GPULP_LIBS
   utils
   libpainter
   libgravityutils
+  libfixedpoint
 )
 
 set(SIMULATOR_LIBS

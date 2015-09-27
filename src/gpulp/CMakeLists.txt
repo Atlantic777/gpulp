@@ -9,3 +9,5 @@ add_library(libgravityutils gravity_utils.cpp)
 add_library(libpainter Painter.cpp)
 target_link_libraries(libpainter libgravityutils)
 
+add_library(libfixedpoint fixed_point.cpp)
+

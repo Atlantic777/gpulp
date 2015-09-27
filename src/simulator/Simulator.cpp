@@ -18,7 +18,7 @@ FrameBuffer* Simulator::render() {
 }
 
 void Simulator::renderOne(GUIObject obj) {
-  // PainterBilinearFloat p;
-  PainterGravityFloat p;
+  PainterBilinearFloat p;
+  // PainterGravityFloat p;
   p.render(*fb, obj);
 }
