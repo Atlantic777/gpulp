@@ -39,8 +39,12 @@ class PainterGravityFloat : public Painter {
 };
 
 class PainterGravityFixed : public Painter {
+  public:
+    InterpolationContextFixed getInterpolationContext(Location l,
+        FrameBuffer &fb, GUIObject &obj);
   private:
-    void stretchBlit() {}
+    void stretchBlit(FrameBuffer &fb, GUIObject obj);
+    PixelMono interpolate(InterpolationContextFixed &ctx);
 };
 
 }

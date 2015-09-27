@@ -26,3 +26,7 @@ target_link_libraries(GravityFloatInterpolation ${COMMON_LIBS})
 
 add_executable(BilinearFixedInterpolation BilinearFixedInterpolation.cpp)
 target_link_libraries(BilinearFixedInterpolation ${COMMON_LIBS})
+
+add_executable(GravityFixedInterpolation
+  GravityFixedInterpolation.cpp)
+target_link_libraries(GravityFixedInterpolation ${COMMON_LIBS})

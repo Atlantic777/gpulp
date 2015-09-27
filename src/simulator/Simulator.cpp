@@ -17,6 +17,9 @@ Simulator::Simulator(std::string algorithm, std::string mathlib) {
   else if(algorithm == "bilinear" && mathlib == "fixed") {
     p = new PainterBilinearFixed();
   }
+  else if(algorithm == "gravity" && mathlib == "fixed") {
+    p = new PainterGravityFixed();
+  }
 }
 
 void Simulator::setScene(Scene *s) {
