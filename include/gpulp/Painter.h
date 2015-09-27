@@ -12,39 +12,43 @@ namespace gpulp {
 class Painter {
   public:
     void render(FrameBuffer &fb, GUIObject obj);
+    void blit(FrameBuffer &fb, GUIObject obj);
+    void stretchBlit(FrameBuffer &fb, GUIObject obj);
+
+  private:
+    virtual PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj) = 0;
+};
+
+class PainterFixed {
+  public:
+    InterpolationContextFixed getInterpolationContext(Location l,
+        FrameBuffer &fb, GUIObject &obj);
+};
+
+class PainterFloat {
+  public:
     InterpolationContextFloat getInterpolationContext(Location l,
         FrameBuffer &fb, GUIObject &obj);
-  private:
-    void blit(FrameBuffer &fb, GUIObject obj);
-    virtual void stretchBlit(FrameBuffer &fb, GUIObject obj) = 0;
 };
 
-class PainterBilinearFloat : public Painter {
+class PainterBilinearFloat : public Painter, public PainterFloat {
   private:
-    void stretchBlit(FrameBuffer &fb, GUIObject obj);
+    PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj);
 };
 
-class PainterBilinearFixed : public Painter {
-  public:
-    InterpolationContextFixed getInterpolationContext(Location l,
-        FrameBuffer &fb, GUIObject &obj);
+class PainterBilinearFixed : public Painter, public PainterFixed {
   private:
-    void stretchBlit(FrameBuffer &fb, GUIObject obj);
+    PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj);
 };
 
-class PainterGravityFloat : public Painter {
+class PainterGravityFloat : public Painter, public PainterFloat {
   private:
-    void stretchBlit(FrameBuffer &fb, GUIObject obj);
-    PixelMono interpolate(InterpolationContextFloat &ctx);
+    PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj);
 };
 
-class PainterGravityFixed : public Painter {
-  public:
-    InterpolationContextFixed getInterpolationContext(Location l,
-        FrameBuffer &fb, GUIObject &obj);
+class PainterGravityFixed : public Painter, public PainterFixed {
   private:
-    void stretchBlit(FrameBuffer &fb, GUIObject obj);
-    PixelMono interpolate(InterpolationContextFixed &ctx);
+    PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj);
 };
 
 }
