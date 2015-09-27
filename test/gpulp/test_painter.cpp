@@ -35,6 +35,11 @@ void test_interpolation_context_1(InterpolationContext &ctx) {
 }
 
 void test_interpolation_context_2(InterpolationContext &ctx) {
+  ASSERT_FALSE(ctx.a == NULL);
+  ASSERT_FALSE(ctx.b == NULL);
+  ASSERT_FALSE(ctx.c == NULL);
+  ASSERT_FALSE(ctx.d == NULL);
+
   ASSERT_EQ(255, ctx.a->getData()[0]);
   ASSERT_EQ(255, ctx.b->getData()[0]);
   ASSERT_EQ(255, ctx.c->getData()[0]);
@@ -96,4 +101,17 @@ TEST(PainterBilinearFloat, StretchBlit) {
   p.render(fb, obj);
 
   test_stretch_blit(fb);
+}
+
+TEST(PainterBilinearFixed, GetInterpolationContext) {
+  FrameBufferMono fb = FrameBufferMono(Size(10, 10));
+  GUIObject obj = get_object(Size(2, 2), Size(4, 4));
+  PainterBilinearFixed pbf;
+  InterpolationContext ctx;
+
+  ctx = pbf.getInterpolationContext(Location(0, 0), fb, obj);
+  test_interpolation_context_1(ctx);
+
+  ctx = pbf.getInterpolationContext(Location(2, 0), fb, obj);
+  test_interpolation_context_2(ctx);
 }

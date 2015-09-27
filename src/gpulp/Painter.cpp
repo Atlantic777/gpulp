@@ -109,10 +109,45 @@ InterpolationContext Painter::getInterpolationContext(Location l,
 
 InterpolationContext PainterBilinearFixed::getInterpolationContext(Location l,
     FrameBuffer &fb, GUIObject &obj) {
-  puts("fixed ctx");
+  InterpolationContext ctx;
+
+  FPNum w = to_fixed(obj.texture.size.width);
+  FPNum h = to_fixed(obj.texture.size.height);
+
+  FPNum w2 = to_fixed(obj.size.width);
+  FPNum h2 = to_fixed(obj.size.height);
+
+  float fx_ratio = ((float)(w-1))/w2;
+  float fy_ratio = ((float)(h-1))/h2;
+
+  FPNum x_ratio = to_fixed(fx_ratio);
+  FPNum y_ratio = to_fixed(fy_ratio);
+
+  int x = mul(x_ratio, l.x) >> L_BITS;
+  int y = mul(y_ratio, l.y) >> L_BITS;
+
+  FPNum x_diff = mul(x_ratio,l.x) - to_fixed(x);
+  FPNum y_diff = mul(y_ratio,l.y) - to_fixed(y);
+
+  int step_x = !(obj.texture.size.width  == 1);
+  int step_y = !(obj.texture.size.height == 1);
+
+  Location a(x         , y);
+  Location b(x + step_x, y);
+  Location c(x         , y + step_y);
+  Location d(x + step_x, y + step_y);
+
+  ctx.a = &obj.texture.data[a.x][a.y];
+  ctx.b = &obj.texture.data[b.x][b.y];
+  ctx.c = &obj.texture.data[c.x][c.y];
+  ctx.d = &obj.texture.data[d.x][d.y];
+
+  ctx.dx = x_diff;
+  ctx.dy = y_diff;
+
+  return ctx;
 }
 
 void PainterBilinearFixed::stretchBlit(FrameBuffer &fb, GUIObject obj) {
   getInterpolationContext(Location(0, 0), fb, obj);
-  puts("here");
 }

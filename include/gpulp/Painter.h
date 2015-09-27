@@ -4,6 +4,7 @@
 #include "simulator/FrameBuffer.h"
 #include "gpulp/GUIObject.h"
 #include "gpulp/InterpolationContext.h"
+#include "gpulp/fixed_point.h"
 #include <map>
 
 namespace gpulp {
@@ -24,9 +25,10 @@ class PainterBilinearFloat : public Painter {
 };
 
 class PainterBilinearFixed : public Painter {
-  private:
+  public:
     InterpolationContext getInterpolationContext(Location l,
         FrameBuffer &fb, GUIObject &obj);
+  private:
     void stretchBlit(FrameBuffer &fb, GUIObject obj);
 };
 
