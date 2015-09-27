@@ -1,5 +1,6 @@
 #include "gpulp/Painter.h"
 #include "gpulp/InterpolationContext.h"
+#include "gpulp/gravity_utils.h"
 #include <iostream>
 #include <cmath>
 
@@ -37,6 +38,10 @@ void PainterBilinearFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
   for(int col = 0; col < obj.size.width; col++) {
     for(int row = 0; row < obj.size.height; row++) {
       ctx = getInterpolationContext(Location(col, row), fb, obj);
+      // printf("%p\n", ctx.a);
+      // printf("%p\n", ctx.b);
+      // printf("%p\n", ctx.c);
+      // printf("%p\n", ctx.d);
 
       PixelMono q1(
         ctx.a->getData()[0]*(1-ctx.dx) +
@@ -61,29 +66,22 @@ void PainterGravityFloat::stretchBlit(FrameBuffer &fb, GUIObject obj) {
   for(int col = 0; col < obj.size.width; col++) {
     for(int row = 0; row < obj.size.height; row++) {
       ctx = getInterpolationContext(Location(col, row), fb, obj);
-      PixelMono p = interpolate(ctx);
+      // printf("%p\n", ctx.a);
+      // printf("%p\n", ctx.b);
+      // printf("%p\n", ctx.c);
+      // printf("%p\n", ctx.d);
+
+      PixelMono p = doInterpolation(ctx);
       fb.write(col, row, p);
     }
   }
 }
 
-PixelMono PainterGravityFloat::interpolate(InterpolationContext &ctx) {
-  PixelMono p;
-
-  // 4 distances
-  // float dst[4];
-  // dst[0] = pow(  ctx.dx, 2.) + pow(  ctx.dy, 2);
-  // dst[1] = pow(1-ctx.dx, 2.) + pow(  ctx.dy, 2);
-  // dst[2] = pow(1-ctx.dx   ) + pow(1-ctx.dy, 2);
-  // dst[3] = pow(1-ctx.dx   ) + pow(1-ctx.dy, 2);
-
-  // maximum jump choice
-  // case choice
-  // gravity like coeffs
-  // actually interpolate
-
-  return p;
-}
+// PixelMono PainterGravityFloat::interpolate(InterpolationContext &ctx) {
+//   PixelMono p = doInterpolation(ctx);
+//
+//   return p;
+// }
 
 InterpolationContext Painter::getInterpolationContext(Location l,
     FrameBuffer &fb, GUIObject &obj) {
