@@ -436,6 +436,18 @@ TEST(GravityFixed, GetWeights) {
   ASSERT_NEAR(0.89*0.29*0.89, from_fixed(w[3]), e);
 }
 
+TEST(GravityFixed, NormalizeWeights) {
+  GravityContextFixed ctx;
+  std::vector<FPNum> w(4, to_fixed(1));
+  ctx.w = w;
+  ctx.normalize_weights();
+  float e = 0.001;
+
+  for(int i = 0; i < 4; i++) {
+    ASSERT_NEAR(0.25, from_fixed(ctx.w[i]), e);
+  }
+}
+
 // TODO: move this test to proper place
 // TEST(GravityFloat, DoInterpolation) {
 //   InterpolationContextFloat iCtx;

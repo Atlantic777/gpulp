@@ -173,8 +173,14 @@ PixelMono PainterGravityFloat::interpolate(Location l, FrameBuffer &fb, GUIObjec
   return PixelMono(val);
 }
 PixelMono PainterGravityFixed::interpolate(Location l, FrameBuffer &fb, GUIObject obj) {
-  InterpolationContextFixed ctx = getInterpolationContext(l, fb, obj);
-  // GravityContextFixed gctx =
-  // do fixedpoint gravity interpolation
-  return PixelMono();
+  InterpolationContextFixed iCtx = getInterpolationContext(l, fb, obj);
+  GravityContextFixed ctx(iCtx);
+
+  unsigned char val;
+  val += mul(ctx.w[0], to_fixed(ctx.interpolationCtx.a->getData()[0]));
+  val += mul(ctx.w[1], to_fixed(ctx.interpolationCtx.b->getData()[0]));
+  val += mul(ctx.w[2], to_fixed(ctx.interpolationCtx.c->getData()[0]));
+  val += mul(ctx.w[3], to_fixed(ctx.interpolationCtx.d->getData()[0]));
+
+  return PixelMono(from_fixed(val));
 }

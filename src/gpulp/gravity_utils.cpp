@@ -335,4 +335,12 @@ void GravityContextFixed::set_weights() {
 }
 
 void GravityContextFixed::normalize_weights() {
+  FPNum sum = 0;
+  for(int i = 0; i < 4; i++) {
+    sum += w[i];
+  }
+
+  for(int i = 0; i < 4; i++) {
+    w[i] = (uint64_t(w[i]) << 32) / sum >> L_BITS;
+  }
 }
