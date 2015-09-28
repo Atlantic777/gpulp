@@ -4,12 +4,24 @@
 
 using namespace gpulp;
 
-TEST(GravityFloat, GetGravityDistances) {
-  InterpolationContextFloat ctx;
-  ctx.dx = 0.2;
-  ctx.dy = 0.4;
+InterpolationContextFloat get_iCtx() {
+  InterpolationContextFloat iCtx;
+  iCtx.a = new PixelMono(40);
+  iCtx.b = new PixelMono(30);
+  iCtx.c = new PixelMono(20);
+  iCtx.d = new PixelMono(10);
 
-  std::vector<float> dst = get_gravity_distances(ctx);
+  iCtx.dx = 0.2;
+  iCtx.dy = 0.4;
+
+  return iCtx;
+}
+
+TEST(GravityFloat, GetGravityDistances) {
+  InterpolationContextFloat iCtx = get_iCtx();
+
+  GravityContextFloat ctx(iCtx);
+  std::vector<float> dst = ctx.get_gravity_distances();
 
   ASSERT_EQ(4, dst.size());
 
@@ -20,75 +32,61 @@ TEST(GravityFloat, GetGravityDistances) {
 }
 
 TEST(GravityFloat, SortPixels) {
-  InterpolationContextFloat ctx;
-  ctx.a = new PixelMono(40);
-  ctx.b = new PixelMono(30);
-  ctx.c = new PixelMono(20);
-  ctx.d = new PixelMono(10);
+  InterpolationContextFloat iCtx = get_iCtx();
+  GravityContextFloat ctx(iCtx);
 
-  std::vector<Pixel*> s = sort_pixels(ctx);
-
-  ASSERT_EQ(4, s.size());
+  ASSERT_EQ(4, ctx.sorted.size());
 
   for(int i = 1; i <= 4; i++) {
-    EXPECT_EQ(i*10, s[i-1]->getData()[0]);
+    EXPECT_EQ(i*10, ctx.sorted[i-1]->getData()[0]);
   }
-
 }
 
-TEST(GravityFloat, ArgSortixels) {
-  InterpolationContextFloat ctx;
-  ctx.a = new PixelMono(40);
-  ctx.b = new PixelMono(30);
-  ctx.c = new PixelMono(20);
-  ctx.d = new PixelMono(10);
+TEST(GravityFloat, ArgSortPixels) {
+  InterpolationContextFloat iCtx = get_iCtx();
+  GravityContextFloat ctx(iCtx);
 
-  std::vector<int> s = arg_sort_pixels(ctx);
-
-  ASSERT_EQ(4, s.size());
+  ASSERT_EQ(4, ctx.Nmax.size());
 
   for(int i = 0; i < 4; i++) {
-    EXPECT_EQ(3-i, s[i]);
+    EXPECT_EQ(3-i, ctx.Nmax[i]);
   }
 }
 
 TEST(GravityFloat, DiffPixelArrAllEqual) {
-  PixelArr pixels;
-  pixels.push_back(new PixelMono(10));
-  pixels.push_back(new PixelMono(10));
-  pixels.push_back(new PixelMono(10));
-  pixels.push_back(new PixelMono(10));
+  InterpolationContextFloat iCtx;
+  iCtx.a = new PixelMono(0);
+  iCtx.b = new PixelMono(0);
+  iCtx.c = new PixelMono(0);
+  iCtx.d = new PixelMono(0);
+  GravityContextFloat ctx(iCtx);
 
-  std::vector<unsigned char> diffs = diff_pixels(pixels);
-
-  ASSERT_EQ(3, diffs.size());
+  ASSERT_EQ(3, ctx.diffs.size());
 
   for(int i = 0; i < 3; i++) {
-    EXPECT_EQ(0, diffs[i]);
+    EXPECT_EQ(0, ctx.diffs[i]);
   }
 }
 
 TEST(GravityFloat, MaximumJump) {
-  PixelArr pixels;
-  pixels.push_back(new PixelMono(10));
-  pixels.push_back(new PixelMono(20));
-  pixels.push_back(new PixelMono(40));
-  pixels.push_back(new PixelMono(70));
+  InterpolationContextFloat iCtx;
+  iCtx.a = new PixelMono(10);
+  iCtx.b = new PixelMono(20);
+  iCtx.c = new PixelMono(40);
+  iCtx.d = new PixelMono(70);
 
-  std::vector<unsigned char> diffs = diff_pixels(pixels);
+  GravityContextFloat ctx(iCtx);
 
-  int Dmax, Kmax;
-  maximum_jump(diffs, Dmax, Kmax);
+  ASSERT_NE(-1, ctx.Dmax);
+  ASSERT_NE(-1, ctx.Kmax);
 
-  ASSERT_NE(-1, Dmax);
-  ASSERT_NE(-1, Kmax);
-
-  ASSERT_EQ(30, Dmax);
-  ASSERT_EQ(2, Kmax);
+  ASSERT_EQ(30, ctx.Dmax);
+  ASSERT_EQ(2, ctx.Kmax);
 }
 
 TEST(GravityFloat, GetChoiceOfCase) {
-  GravityContextFloat ctx;
+  GravityContext ctx;
+
   ctx.Dmax = 2;
   ctx.Nmax.push_back(3);
   ctx.Nmax.push_back(2);
@@ -96,46 +94,45 @@ TEST(GravityFloat, GetChoiceOfCase) {
   ctx.Nmax.push_back(0);
 
   int choice;
-
-  choice = get_choice_of_case(ctx);
+  choice = ctx.get_choice_of_case();
   ASSERT_EQ(7, choice);
 
   ctx.Dmax = 8;
   ctx.Kmax = 0;
-  choice = get_choice_of_case(ctx);
+  choice = ctx.get_choice_of_case();
   ASSERT_NE(7, choice);
   ASSERT_NE(-1, choice);
   ASSERT_EQ(3, choice);
 
   ctx.Kmax = 2;
-  choice = get_choice_of_case(ctx);
+  choice = ctx.get_choice_of_case();
   ASSERT_EQ(0, choice);
 
   ctx.Kmax = 1;
   ctx.Nmax[0] = 0;
   ctx.Nmax[1] = 1;
-  choice = get_choice_of_case(ctx);
+  choice = ctx.get_choice_of_case();
   ASSERT_EQ(5, choice);
 
   ctx.Nmax[0] = 2;
   ctx.Nmax[1] = 3;
-  choice = get_choice_of_case(ctx);
+  choice = ctx.get_choice_of_case();
   ASSERT_EQ(5, choice);
 
   ctx.Nmax[0] = 0;
   ctx.Nmax[1] = 2;
-  choice = get_choice_of_case(ctx);
+  choice = ctx.get_choice_of_case();
   ASSERT_EQ(6, choice);
 
   ctx.Nmax[0] = 1;
   ctx.Nmax[1] = 3;
-  choice = get_choice_of_case(ctx);
+  choice = ctx.get_choice_of_case();
   ASSERT_EQ(6, choice);
 
   ctx.Kmax = 3;
   ctx.Nmax[0] = 0;
   ctx.Nmax[1] = 3;
-  choice = get_choice_of_case(ctx);
+  choice = ctx.get_choice_of_case();
   ASSERT_EQ(7, choice);
 }
 
@@ -146,7 +143,7 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
   ctx.interpolationCtx.dx = 0.2;
   ctx.interpolationCtx.dy = 0.1;
 
-  std::vector<float> w = get_weights(ctx);
+  std::vector<float> w = ctx.get_weights();
   ASSERT_EQ(4, w.size());
   ASSERT_FLOAT_EQ(1, w[0]);
   ASSERT_FLOAT_EQ(0, w[1]);
@@ -154,8 +151,8 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
   ASSERT_FLOAT_EQ(0, w[3]);
 
   ctx.interpolationCtx.dy = 0.5;
-  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
-  w = get_weights(ctx);
+  ctx.dst = ctx.get_gravity_distances();
+  w = ctx.get_weights();
 
   ASSERT_FLOAT_EQ(0, w[0]);
   ASSERT_FLOAT_EQ(0.29*0.89, w[1]);
@@ -164,15 +161,15 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
 
   ctx.cas = 1;
   ctx.interpolationCtx.dy = 0.1;
-  w = get_weights(ctx);
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0, w[0]);
   ASSERT_FLOAT_EQ(1, w[1]);
   ASSERT_FLOAT_EQ(0, w[2]);
   ASSERT_FLOAT_EQ(0, w[3]);
 
   ctx.interpolationCtx.dy = 0.5;
-  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
-  w = get_weights(ctx);
+  ctx.dst = ctx.get_gravity_distances();
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0.29*0.89, w[0]);
   ASSERT_FLOAT_EQ(0, w[1]);
   ASSERT_FLOAT_EQ(0.29*0.89, w[2]);
@@ -180,15 +177,15 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
 
   ctx.cas = 2;
   ctx.interpolationCtx.dy = 0.9;
-  w = get_weights(ctx);
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0, w[0]);
   ASSERT_FLOAT_EQ(0, w[1]);
   ASSERT_FLOAT_EQ(1, w[2]);
   ASSERT_FLOAT_EQ(0, w[3]);
 
   ctx.interpolationCtx.dy = 0.5;
-  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
-  w = get_weights(ctx);
+  ctx.dst = ctx.get_gravity_distances();
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0.89*0.89, w[0]);
   ASSERT_FLOAT_EQ(0.29*0.89, w[1]);
   ASSERT_FLOAT_EQ(0, w[2]);
@@ -197,7 +194,7 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
   ctx.cas = 3;
   ctx.interpolationCtx.dx = 1;
   ctx.interpolationCtx.dy = 0.7;
-  w = get_weights(ctx);
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0, w[0]);
   ASSERT_FLOAT_EQ(0, w[1]);
   ASSERT_FLOAT_EQ(0, w[2]);
@@ -205,8 +202,8 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
 
   ctx.interpolationCtx.dx = 0.2;
   ctx.interpolationCtx.dy = 0.5;
-  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
-  w = get_weights(ctx);
+  ctx.dst = ctx.get_gravity_distances();
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0.89*0.29, w[0]);
   ASSERT_FLOAT_EQ(0.29*0.29, w[1]);
   ASSERT_FLOAT_EQ(0.29*0.89, w[2]);
@@ -214,16 +211,16 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
 
   ctx.cas = 5;
   ctx.interpolationCtx.dy = 0.2;
-  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
-  w = get_weights(ctx);
+  ctx.dst = ctx.get_gravity_distances();
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0.68, w[0]);
   ASSERT_FLOAT_EQ(0.08, w[1]);
   ASSERT_FLOAT_EQ(0, w[2]);
   ASSERT_FLOAT_EQ(0, w[3]);
 
   ctx.interpolationCtx.dy = 0.8;
-  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
-  w = get_weights(ctx);
+  ctx.dst = ctx.get_gravity_distances();
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0, w[0]);
   ASSERT_FLOAT_EQ(0, w[1]);
   ASSERT_FLOAT_EQ(0.68, w[2]);
@@ -232,23 +229,23 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
   ctx.cas = 6;
   ctx.interpolationCtx.dx = 0.2;
   ctx.interpolationCtx.dy = 0.5;
-  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
-  w = get_weights(ctx);
+  ctx.dst = ctx.get_gravity_distances();
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0.29, w[0]);
   ASSERT_FLOAT_EQ(0, w[1]);
   ASSERT_FLOAT_EQ(0.29, w[2]);
   ASSERT_FLOAT_EQ(0, w[3]);
 
   ctx.interpolationCtx.dx = 0.8;
-  ctx.dst = get_gravity_distances(ctx.interpolationCtx);
-  w = get_weights(ctx);
+  ctx.dst = ctx.get_gravity_distances();
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0, w[0]);
   ASSERT_FLOAT_EQ(0.29, w[1]);
   ASSERT_FLOAT_EQ(0, w[2]);
   ASSERT_FLOAT_EQ(0.29, w[3]);
 
   ctx.cas = 7;
-  w = get_weights(ctx);
+  w = ctx.get_weights();
   ASSERT_FLOAT_EQ(0.29*0.89*0.29, w[0]);
   ASSERT_FLOAT_EQ(0.89*0.89*0.29, w[1]);
   ASSERT_FLOAT_EQ(0.89*0.29*0.29, w[2]);
@@ -256,8 +253,10 @@ TEST(GravityFloat, GetInterpolationCoeffs) {
 }
 
 TEST(GravityFloat, NormalizeWeights) {
+  GravityContextFloat ctx;
   std::vector<float> w(4, 1);
-  normalize_weights(w);
+  ctx.w = w;
+  w = ctx.normalize_weights();
 
   for(int i = 0; i < 4; i++) {
     ASSERT_EQ(0.25, w[i]);
@@ -275,7 +274,7 @@ TEST(GravityFloat, PrepareGravityCtx) {
   iCtx.dx = 0.2;
   iCtx.dy = 0.2;
 
-  GravityContextFloat ctx = get_gravity_ctx(iCtx);
+  GravityContextFloat ctx(iCtx);
   ASSERT_FLOAT_EQ(0.08, ctx.dst[0]);
   ASSERT_FLOAT_EQ(0.68, ctx.dst[1]);
   ASSERT_FLOAT_EQ(0.68, ctx.dst[2]);
@@ -295,12 +294,10 @@ TEST(GravityFloat, PrepareGravityCtx) {
 
 TEST(GravityFloat, DoInterpolation) {
   InterpolationContextFloat iCtx;
-
   iCtx.a = new PixelMono(255);
   iCtx.b = new PixelMono(0);
   iCtx.c = new PixelMono(0);
   iCtx.d = new PixelMono(0);
-
   iCtx.dx = 0.2;
   iCtx.dy = 0.2;
 

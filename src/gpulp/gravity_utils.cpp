@@ -6,16 +6,25 @@ using namespace gpulp;
 typedef std::pair<Pixel*, int> PixelPair;
 typedef std::deque<PixelPair> PixelPairArr;
 
-PixelPairArr pixel_pair_sort(InterpolationContextFloat &ctx){
+void GravityContext::common_init(PixelArr &input) {
+  sorted = sort_pixels(input);
+  diffs = diff_pixels(sorted);
+  maximum_jump(diffs);
+
+  Nmax = arg_sort_pixels(input);
+  cas = get_choice_of_case();
+}
+
+PixelPairArr pixel_pair_sort(PixelArr &pixels){
   PixelPairArr sorted;
   PixelPairArr firstHalf;
   PixelPairArr secondHalf;
 
-  firstHalf.push_back(PixelPair(ctx.a, 0));
-  firstHalf.push_back(PixelPair(ctx.b, 1));
+  firstHalf.push_back(PixelPair(pixels[0], 0));
+  firstHalf.push_back(PixelPair(pixels[1], 1));
 
-  secondHalf.push_back(PixelPair(ctx.c, 2));
-  secondHalf.push_back(PixelPair(ctx.d, 3));
+  secondHalf.push_back(PixelPair(pixels[2], 2));
+  secondHalf.push_back(PixelPair(pixels[3], 3));
 
   if(firstHalf[0].first->getData()[0] > firstHalf[1].first->getData()[0]) {
     firstHalf.push_back(firstHalf[0]);
@@ -52,9 +61,9 @@ PixelPairArr pixel_pair_sort(InterpolationContextFloat &ctx){
   return sorted;
 }
 
-PixelArr gpulp::sort_pixels(InterpolationContextFloat &ctx) {
+PixelArr GravityContext::sort_pixels(PixelArr &input) {
   std::vector<Pixel*> parr;
-  PixelPairArr pairs = pixel_pair_sort(ctx);
+  PixelPairArr pairs = pixel_pair_sort(input);
 
   for(int i = 0; i < 4 && i < pairs.size(); i++) {
     parr.push_back(pairs[i].first);
@@ -63,9 +72,9 @@ PixelArr gpulp::sort_pixels(InterpolationContextFloat &ctx) {
   return parr;
 }
 
-std::vector<int> gpulp::arg_sort_pixels(InterpolationContextFloat &ctx) {
+std::vector<int> GravityContext::arg_sort_pixels(PixelArr &input) {
   std::vector<int> args;
-  PixelPairArr pairs = pixel_pair_sort(ctx);
+  PixelPairArr pairs = pixel_pair_sort(input);
 
   for(int i = 0; i < 4 && i < pairs.size(); i++) {
     args.push_back(pairs[i].second);
@@ -74,8 +83,9 @@ std::vector<int> gpulp::arg_sort_pixels(InterpolationContextFloat &ctx) {
   return args;
 }
 
-std::vector<float> gpulp::get_gravity_distances(InterpolationContextFloat &ctx) {
+std::vector<float> GravityContextFloat::get_gravity_distances() {
   std::vector<float> dst;
+  InterpolationContextFloat &ctx = interpolationCtx;
 
   dst.push_back(pow(ctx.dx, 2) + pow(ctx.dy, 2));
   dst.push_back(pow(1-ctx.dx, 2) + pow(ctx.dy, 2));
@@ -85,7 +95,7 @@ std::vector<float> gpulp::get_gravity_distances(InterpolationContextFloat &ctx) 
   return dst;
 }
 
-std::vector<unsigned char> gpulp::diff_pixels(PixelArr &pixels) {
+std::vector<unsigned char> GravityContext::diff_pixels(PixelArr &pixels) {
   std::vector<unsigned char> diffs;
   unsigned char tmp;
 
@@ -97,12 +107,11 @@ std::vector<unsigned char> gpulp::diff_pixels(PixelArr &pixels) {
   return diffs;
 }
 
-void gpulp::maximum_jump(std::vector<unsigned char> &diffs,
-    int &Dmax, int &Kmax)  {
+void GravityContext::maximum_jump(std::vector<unsigned char> &diffs)  {
   Dmax = -1;
   Kmax = -1;
 
-  for(int i = 0; i < 3 && i < diffs.size(); i++) {
+  for(int i = 0; i < 3; i++) {
     if(diffs[i] > Dmax) {
       Dmax = diffs[i];
       Kmax = i;
@@ -110,25 +119,23 @@ void gpulp::maximum_jump(std::vector<unsigned char> &diffs,
   }
 }
 
-int gpulp::get_choice_of_case(GravityContextFloat &ctx) {
-  int cas = -1;
-
-  if(ctx.Dmax < 8) {
+int GravityContext::get_choice_of_case() {
+  if(Dmax < 8) {
     cas = 7;
   }
-  else if(ctx.Kmax == 0) {
-    cas = ctx.Nmax[0];
+  else if(Kmax == 0) {
+    cas = Nmax[0];
   }
-  else if(ctx.Kmax == 2) {
-    cas = ctx.Nmax[3];
+  else if(Kmax == 2) {
+    cas = Nmax[3];
   }
   else {
-    if((ctx.Nmax[0] == 0 && ctx.Nmax[1] == 1) ||
-       (ctx.Nmax[0] == 2 && ctx.Nmax[1] == 3)) {
+    if((Nmax[0] == 0 && Nmax[1] == 1) ||
+       (Nmax[0] == 2 && Nmax[1] == 3)) {
       cas = 5;
     }
-    else if((ctx.Nmax[0] == 0 && ctx.Nmax[1] == 2) ||
-            (ctx.Nmax[0] == 1 && ctx.Nmax[1] == 3)) {
+    else if((Nmax[0] == 0 && Nmax[1] == 2) ||
+            (Nmax[0] == 1 && Nmax[1] == 3)) {
       cas = 6;
     }
     else {
@@ -136,85 +143,83 @@ int gpulp::get_choice_of_case(GravityContextFloat &ctx) {
     }
   }
 
-  ctx.cas = cas;
-
   return cas;
 }
 
-std::vector<float> gpulp::get_weights(GravityContextFloat &ctx) {
+std::vector<float> GravityContextFloat::get_weights() {
   std::vector<float> w(4, 0);
 
-  if(ctx.cas == 0) {
-    if(ctx.interpolationCtx.dy < (0.5 - ctx.interpolationCtx.dx)) {
+  if(cas == 0) {
+    if(interpolationCtx.dy < (0.5 - interpolationCtx.dx)) {
       w[0] = 1;
     }
     else {
-      w[1] = ctx.dst[2] * ctx.dst[3];
-      w[2] = ctx.dst[1] * ctx.dst[3];
-      w[3] = ctx.dst[1] * ctx.dst[2];
+      w[1] = dst[2] * dst[3];
+      w[2] = dst[1] * dst[3];
+      w[3] = dst[1] * dst[2];
     }
   }
-  else if(ctx.cas == 1) {
-    if(ctx.interpolationCtx.dy < 0.5 - ctx.interpolationCtx.dx) {
+  else if(cas == 1) {
+    if(interpolationCtx.dy < 0.5 - interpolationCtx.dx) {
       w[1] = 1;
     }
     else {
-      w[0] = ctx.dst[2]*ctx.dst[3];
-      w[2] = ctx.dst[0]*ctx.dst[3];
-      w[3] = ctx.dst[0]*ctx.dst[2];
+      w[0] = dst[2]*dst[3];
+      w[2] = dst[0]*dst[3];
+      w[3] = dst[0]*dst[2];
     }
   }
-  else if(ctx.cas == 2) {
-    if(ctx.interpolationCtx.dy > 0.5 + ctx.interpolationCtx.dx) {
+  else if(cas == 2) {
+    if(interpolationCtx.dy > 0.5 + interpolationCtx.dx) {
       w[2] = 1;
     }
     else {
-      w[0] = ctx.dst[1]*ctx.dst[3];
-      w[1] = ctx.dst[0]*ctx.dst[3];
-      w[3] = ctx.dst[0]*ctx.dst[1];
+      w[0] = dst[1]*dst[3];
+      w[1] = dst[0]*dst[3];
+      w[3] = dst[0]*dst[1];
     }
   }
-  else if(ctx.cas == 3) {
-    if(ctx.interpolationCtx.dy > 1.5 - ctx.interpolationCtx.dx) {
+  else if(cas == 3) {
+    if(interpolationCtx.dy > 1.5 - interpolationCtx.dx) {
       w[3] = 1;
     }
     else {
-      w[0] = ctx.dst[1]*ctx.dst[2];
-      w[1] = ctx.dst[0]*ctx.dst[2];
-      w[2] = ctx.dst[0]*ctx.dst[1];
+      w[0] = dst[1]*dst[2];
+      w[1] = dst[0]*dst[2];
+      w[2] = dst[0]*dst[1];
     }
   }
-  else if(ctx.cas == 5) {
-    if(ctx.interpolationCtx.dy < 0.5) {
-      w[0] = ctx.dst[1];
-      w[1] = ctx.dst[0];
+  else if(cas == 5) {
+    if(interpolationCtx.dy < 0.5) {
+      w[0] = dst[1];
+      w[1] = dst[0];
     }
     else {
-      w[2] = ctx.dst[3];
-      w[3] = ctx.dst[2];
+      w[2] = dst[3];
+      w[3] = dst[2];
     }
   }
-  else if(ctx.cas == 6) {
-    if(ctx.interpolationCtx.dx < 0.5) {
-      w[0] = ctx.dst[2];
-      w[2] = ctx.dst[0];
+  else if(cas == 6) {
+    if(interpolationCtx.dx < 0.5) {
+      w[0] = dst[2];
+      w[2] = dst[0];
     }
     else {
-      w[1] = ctx.dst[3];
-      w[3] = ctx.dst[1];
+      w[1] = dst[3];
+      w[3] = dst[1];
     }
   }
   else {
-    w[0] = ctx.dst[1]*ctx.dst[2]*ctx.dst[3];
-    w[1] = ctx.dst[0]*ctx.dst[2]*ctx.dst[3];
-    w[2] = ctx.dst[0]*ctx.dst[1]*ctx.dst[3];
-    w[3] = ctx.dst[0]*ctx.dst[1]*ctx.dst[2];
+    w[0] = dst[1]*dst[2]*dst[3];
+    w[1] = dst[0]*dst[2]*dst[3];
+    w[2] = dst[0]*dst[1]*dst[3];
+    w[3] = dst[0]*dst[1]*dst[2];
   }
 
   return w;
 }
 
-std::vector<float> gpulp::normalize_weights(std::vector<float> &w) {
+std::vector<float> GravityContextFloat::normalize_weights() {
   float sum = 0;
   for(int i = 0; i < 4; i++) {
     sum += w[i];
@@ -227,24 +232,43 @@ std::vector<float> gpulp::normalize_weights(std::vector<float> &w) {
   return w;
 }
 
-GravityContextFloat gpulp::get_gravity_ctx(InterpolationContextFloat &iCtx) {
-  GravityContextFloat ctx;
+GravityContextFloat::GravityContextFloat(InterpolationContextFloat &iCtx) {
+  PixelArr input;
+  input.push_back(iCtx.a);
+  input.push_back(iCtx.b);
+  input.push_back(iCtx.c);
+  input.push_back(iCtx.d);
 
-  ctx.interpolationCtx = iCtx;
-  ctx.dst = get_gravity_distances(iCtx);
-  PixelArr sorted = sort_pixels(iCtx);
-  std::vector<unsigned char> diffs = diff_pixels(sorted);
-  maximum_jump(diffs, ctx.Dmax, ctx.Kmax);
-  ctx.Nmax = arg_sort_pixels(iCtx);
-  ctx.cas = get_choice_of_case(ctx);
-  ctx.w = get_weights(ctx);
-  ctx.w = normalize_weights(ctx.w);
-
-  return ctx;
+  interpolationCtx = iCtx;
+  dst = get_gravity_distances();
+  common_init(input);
+  w = get_weights();
+  w = normalize_weights();
 }
 
+// GravityContextFloat gpulp::get_gravity_ctx(InterpolationContextFloat &iCtx) {
+//   GravityContextFloat ctx;
+//   PixelArr input;
+//   input.push_back(iCtx.a);
+//   input.push_back(iCtx.b);
+//   input.push_back(iCtx.c);
+//   input.push_back(iCtx.d);
+//
+//   ctx.dst = get_gravity_distances(iCtx);
+//   PixelArr sorted = sort_pixels(input);
+//   std::vector<unsigned char> diffs = diff_pixels(sorted);
+//   maximum_jump(diffs, ctx.Dmax, ctx.Kmax);
+//   ctx.Nmax = arg_sort_pixels(input);
+//   // ctx.cas = get_choice_of_case(ctx);
+//   ctx.w = get_weights(ctx);
+//   ctx.w = normalize_weights(ctx.w);
+//
+//   return ctx;
+// }
+
 PixelMono gpulp::doInterpolation(InterpolationContextFloat &iCtx) {
-  GravityContextFloat ctx = get_gravity_ctx(iCtx);
+  // GravityContextFloat ctx = get_gravity_ctx(iCtx);
+  GravityContextFloat ctx(iCtx);
 
   unsigned char val;
   val += ctx.w[0]*ctx.interpolationCtx.a->getData()[0];
