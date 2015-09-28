@@ -7,12 +7,17 @@ typedef std::pair<Pixel*, int> PixelPair;
 typedef std::deque<PixelPair> PixelPairArr;
 
 void GravityContext::common_init(PixelArr &input) {
+  set_gravity_distances();
+
   sorted = sort_pixels(input);
   diffs = diff_pixels(sorted);
   maximum_jump(diffs);
 
   Nmax = arg_sort_pixels(input);
   cas = get_choice_of_case();
+
+  set_weights();
+  normalize_weights();
 }
 
 PixelPairArr pixel_pair_sort(PixelArr &pixels){
@@ -83,16 +88,14 @@ std::vector<int> GravityContext::arg_sort_pixels(PixelArr &input) {
   return args;
 }
 
-std::vector<float> GravityContextFloat::get_gravity_distances() {
-  std::vector<float> dst;
+void GravityContextFloat::set_gravity_distances() {
   InterpolationContextFloat &ctx = interpolationCtx;
 
+  dst.clear();
   dst.push_back(pow(ctx.dx, 2) + pow(ctx.dy, 2));
   dst.push_back(pow(1-ctx.dx, 2) + pow(ctx.dy, 2));
   dst.push_back(pow(ctx.dx, 2) + pow(1-ctx.dy, 2));
   dst.push_back(pow(1-ctx.dx, 2) + pow(1-ctx.dy, 2));
-
-  return dst;
 }
 
 std::vector<unsigned char> GravityContext::diff_pixels(PixelArr &pixels) {
@@ -146,9 +149,8 @@ int GravityContext::get_choice_of_case() {
   return cas;
 }
 
-std::vector<float> GravityContextFloat::get_weights() {
-  std::vector<float> w(4, 0);
-
+void GravityContextFloat::set_weights() {
+  w = std::vector<float>(4, 0);
   if(cas == 0) {
     if(interpolationCtx.dy < (0.5 - interpolationCtx.dx)) {
       w[0] = 1;
@@ -215,11 +217,9 @@ std::vector<float> GravityContextFloat::get_weights() {
     w[2] = dst[0]*dst[1]*dst[3];
     w[3] = dst[0]*dst[1]*dst[2];
   }
-
-  return w;
 }
 
-std::vector<float> GravityContextFloat::normalize_weights() {
+void GravityContextFloat::normalize_weights() {
   float sum = 0;
   for(int i = 0; i < 4; i++) {
     sum += w[i];
@@ -228,8 +228,6 @@ std::vector<float> GravityContextFloat::normalize_weights() {
   for(int i = 0; i < 4; i++) {
     w[i] /= sum;
   }
-
-  return w;
 }
 
 GravityContextFloat::GravityContextFloat(InterpolationContextFloat &iCtx) {
@@ -240,34 +238,10 @@ GravityContextFloat::GravityContextFloat(InterpolationContextFloat &iCtx) {
   input.push_back(iCtx.d);
 
   interpolationCtx = iCtx;
-  dst = get_gravity_distances();
   common_init(input);
-  w = get_weights();
-  w = normalize_weights();
 }
 
-// GravityContextFloat gpulp::get_gravity_ctx(InterpolationContextFloat &iCtx) {
-//   GravityContextFloat ctx;
-//   PixelArr input;
-//   input.push_back(iCtx.a);
-//   input.push_back(iCtx.b);
-//   input.push_back(iCtx.c);
-//   input.push_back(iCtx.d);
-//
-//   ctx.dst = get_gravity_distances(iCtx);
-//   PixelArr sorted = sort_pixels(input);
-//   std::vector<unsigned char> diffs = diff_pixels(sorted);
-//   maximum_jump(diffs, ctx.Dmax, ctx.Kmax);
-//   ctx.Nmax = arg_sort_pixels(input);
-//   // ctx.cas = get_choice_of_case(ctx);
-//   ctx.w = get_weights(ctx);
-//   ctx.w = normalize_weights(ctx.w);
-//
-//   return ctx;
-// }
-
 PixelMono gpulp::doInterpolation(InterpolationContextFloat &iCtx) {
-  // GravityContextFloat ctx = get_gravity_ctx(iCtx);
   GravityContextFloat ctx(iCtx);
 
   unsigned char val;

@@ -24,39 +24,25 @@ namespace gpulp {
     std::vector<unsigned char> diff_pixels(PixelArr &pixels);
     void maximum_jump(std::vector<unsigned char> &diffs);
     void common_init(PixelArr &input);
+
+    virtual void set_gravity_distances() = 0;
+    virtual void set_weights() = 0;
+    virtual void normalize_weights() = 0;
   };
 
   class GravityContextFloat : public GravityContext {
     public:
       GravityContextFloat() {}
       GravityContextFloat(InterpolationContextFloat &iCtx);
+
       InterpolationContextFloat interpolationCtx;
       std::vector<float> dst;
       std::vector<float> w;
 
-      std::vector<float> get_gravity_distances();
-      std::vector<float> get_weights();
-      std::vector<float> normalize_weights();
+      void set_gravity_distances();
+      void set_weights();
+      void normalize_weights();
   };
-
-  // independant
-  // PixelArr sort_pixels(PixelArr &input);
-  // std::vector<int> arg_sort_pixels(PixelArr &input);
-  // std::vector<unsigned char> diff_pixels(PixelArr &pixels);
-  // void maximum_jump(std::vector<unsigned char> &diffs, int &Dmax, int &Kmax);
-
-  // constructors
-  // GravityContextFloat get_gravity_ctx(InterpolationContextFloat &iCtx);
-
-  // float point
-  // std::vector<float> get_gravity_distances(InterpolationContextFloat &ctx);
-  // std::vector<float> get_weights(GravityContextFloat &ctx);
-  // std::vector<float> normalize_weights(std::vector<float> &w);
-
-  // fixed point
-  // std::vector<FPNum> get_gravity_distances(InterpolationContextFloat &ctx);
-  // std::vector<FPNum> get_weights(GravityContextFloat &ctx);
-  // std::vector<FPNum> normalize_weights(std::vector<float> &w);
 
   // move out of here
   PixelMono doInterpolation(InterpolationContextFloat &ctx);
