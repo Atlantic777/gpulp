@@ -26,7 +26,6 @@ void GravityContext::pixel_pair_sort(){
 
   int a, b;
   int ti;
-  Pixel *tp;
 
   a = 0;
   b = 2;
@@ -34,10 +33,6 @@ void GravityContext::pixel_pair_sort(){
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
-
-    tp = pixels[a];
-    pixels[a] = pixels[b];
-    pixels[b] = tp;
   }
 
   a = 1;
@@ -46,10 +41,6 @@ void GravityContext::pixel_pair_sort(){
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
-
-    tp = pixels[a];
-    pixels[a] = pixels[b];
-    pixels[b] = tp;
   }
 
   a = 0;
@@ -58,10 +49,6 @@ void GravityContext::pixel_pair_sort(){
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
-
-    tp = pixels[a];
-    pixels[a] = pixels[b];
-    pixels[b] = tp;
   }
 
   a = 2;
@@ -70,10 +57,6 @@ void GravityContext::pixel_pair_sort(){
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
-
-    tp = pixels[a];
-    pixels[a] = pixels[b];
-    pixels[b] = tp;
   }
 
   a = 1;
@@ -82,10 +65,15 @@ void GravityContext::pixel_pair_sort(){
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
+  }
 
-    tp = pixels[a];
-    pixels[a] = pixels[b];
-    pixels[b] = tp;
+  Pixel *tp[4];
+  for(int i = 0; i < 4; i++) {
+    tp[i] = pixels[i];
+  }
+
+  for(int i = 0; i < 4; i++) {
+    pixels[i] = tp[index[i]];
   }
 }
 
@@ -99,10 +87,8 @@ void GravityContextFloat::set_gravity_distances() {
 }
 
 void GravityContext::diff_pixels() {
-  unsigned char tmp;
-
   for(int i = 0; i < 3; i++) {
-    diffs[i] = abs(pixels[i+1]->getData()[0] - pixels[i]->getData()[0]);
+    diffs[i] = abs(pixels[i+1]->data[0] - pixels[i]->data[0]);
   }
 }
 
