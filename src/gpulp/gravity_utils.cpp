@@ -4,86 +4,122 @@
 
 using namespace gpulp;
 typedef std::pair<Pixel*, int> PixelPair;
-typedef std::deque<PixelPair> PixelPairArr;
+typedef std::vector<PixelPair> PixelPairArr;
 
 void GravityContext::common_init(PixelArr &input) {
   set_gravity_distances();
 
-  sorted = sort_pixels(input);
+  pixel_pair_sort(input);
+  // Nmax = arg_sort_pixels(input);
+  // sorted = sort_pixels(input);
   diffs = diff_pixels(sorted);
   maximum_jump(diffs);
 
-  Nmax = arg_sort_pixels(input);
   cas = get_choice_of_case();
 
   set_weights();
   normalize_weights();
 }
 
-PixelPairArr pixel_pair_sort(PixelArr &pixels){
-  PixelPairArr sorted;
-  PixelPairArr firstHalf;
-  PixelPairArr secondHalf;
-
-  firstHalf.push_back(PixelPair(pixels[0], 0));
-  firstHalf.push_back(PixelPair(pixels[1], 1));
-
-  secondHalf.push_back(PixelPair(pixels[2], 2));
-  secondHalf.push_back(PixelPair(pixels[3], 3));
-
-  if(firstHalf[0].first->getData()[0] > firstHalf[1].first->getData()[0]) {
-    firstHalf.push_back(firstHalf[0]);
-    firstHalf.pop_front();
-  }
-
-  if(secondHalf[0].first->getData()[0] > secondHalf[1].first->getData()[0]) {
-    secondHalf.push_back(secondHalf[0]);
-    secondHalf.pop_front();
-  }
+void GravityContext::pixel_pair_sort(PixelArr &pixels){
+  int *index = Nmax;
+  unsigned char value[4];
 
   for(int i = 0; i < 4; i++) {
-    if(firstHalf.size() && secondHalf.size()) {
-      if(firstHalf.front().first->getData()[0] <
-          secondHalf.front().first->getData()[0]) {
-        sorted.push_back(firstHalf.front());
-        firstHalf.pop_front();
-      }
-      else {
-        sorted.push_back(secondHalf.front());
-        secondHalf.pop_front();
-      }
-    }
-    else if(firstHalf.size()) {
-      sorted.push_back(firstHalf.front());
-      firstHalf.pop_front();
-    }
-    else if(secondHalf.size()) {
-      sorted.push_back(secondHalf.front());
-      secondHalf.pop_front();
-    }
+    Nmax[i] = i;
+    value[i] = pixels[i]->data[0];
   }
 
-  return sorted;
+  int a, b;
+  int ti;
+  unsigned char tv;
+
+  a = 0;
+  b = 2;
+  if(value[a] > value[b]) {
+    ti = index[a];
+    index[a] = index[b];
+    index[b] = ti;
+
+    tv = value[a];
+    value[a] = value[b];
+    value[b] = tv;
+  }
+
+  a = 1;
+  b = 3;
+  if(value[a] > value[b]) {
+    ti = index[a];
+    index[a] = index[b];
+    index[b] = ti;
+
+    tv = value[a];
+    value[a] = value[b];
+    value[b] = tv;
+  }
+
+  a = 0;
+  b = 1;
+  if(value[a] > value[b]) {
+    ti = index[a];
+    index[a] = index[b];
+    index[b] = ti;
+
+    tv = value[a];
+    value[a] = value[b];
+    value[b] = tv;
+  }
+
+  a = 2;
+  b = 3;
+  if(value[a] > value[b]) {
+    ti = index[a];
+    index[a] = index[b];
+    index[b] = ti;
+
+    tv = value[a];
+    value[a] = value[b];
+    value[b] = tv;
+  }
+
+  a = 1;
+  b = 2;
+  if(value[a] > value[b]) {
+    ti = index[a];
+    index[a] = index[b];
+    index[b] = ti;
+
+    tv = value[a];
+    value[a] = value[b];
+    value[b] = tv;
+  }
+
+  sorted.clear();
+  for(int i = 0; i < 4; i++) {
+    sorted.push_back(pixels[index[i]]);
+  }
+
+  // return index;
 }
 
 PixelArr GravityContext::sort_pixels(PixelArr &input) {
   std::vector<Pixel*> parr;
-  PixelPairArr pairs = pixel_pair_sort(input);
-
-  for(int i = 0; i < 4 && i < pairs.size(); i++) {
-    parr.push_back(pairs[i].first);
-  }
+  // PixelPairArr pairs = pixel_pair_sort(input);
+  //
+  // for(int i = 0; i < 4; i++) {
+  //   parr.push_back(pairs[i].first);
+  // }
 
   return parr;
 }
 
 std::vector<int> GravityContext::arg_sort_pixels(PixelArr &input) {
   std::vector<int> args;
-  PixelPairArr pairs = pixel_pair_sort(input);
-
-  for(int i = 0; i < 4 && i < pairs.size(); i++) {
-    args.push_back(pairs[i].second);
-  }
+  // PixelPairArr pairs = pixel_pair_sort(input);
+  //
+  // for(int i = 0; i < 4; i++) {
+  //   args.push_back(pairs[i].second);
+  // }
 
   return args;
 }

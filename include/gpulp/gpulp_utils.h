@@ -59,6 +59,7 @@ class Pixel {
   public:
     virtual unsigned char* getData() const = 0;
     virtual void  setData(unsigned char *data) = 0;
+    unsigned char *data;
 };
 
 class PixelMono : public Pixel {
@@ -87,8 +88,8 @@ class PixelMono : public Pixel {
     }
 
 
-  private:
-    unsigned char *data;
+  // private:
+    // unsigned char *data;
 };
 
 enum Channels {ch_mono = 1, ch_color = 3};

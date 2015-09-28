@@ -13,11 +13,12 @@ namespace gpulp {
   public:
     int Dmax; // value of max diff
     int Kmax; // idx of max diff
-    std::vector<int> Nmax; // sorted indexes
+    int Nmax[4]; // sorted indexes
     int cas;
     PixelArr sorted;
     std::vector<unsigned char> diffs;
 
+    void pixel_pair_sort(PixelArr &pixels);
     int get_choice_of_case();
     PixelArr sort_pixels(PixelArr &input);
     std::vector<int> arg_sort_pixels(PixelArr &input);
