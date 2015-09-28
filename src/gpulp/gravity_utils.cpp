@@ -19,79 +19,73 @@ void GravityContext::common_init() {
 
 void GravityContext::pixel_pair_sort(){
   int *index = Nmax;
-  unsigned char value[4];
 
   for(int i = 0; i < 4; i++) {
     Nmax[i] = i;
-    value[i] = pixels[i]->data[0];
   }
 
   int a, b;
   int ti;
-  unsigned char tv;
+  Pixel *tp;
 
   a = 0;
   b = 2;
-  if(value[a] > value[b]) {
+  if(pixels[a]->data[0] > pixels[b]->data[0]) {
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
 
-    tv = value[a];
-    value[a] = value[b];
-    value[b] = tv;
+    tp = pixels[a];
+    pixels[a] = pixels[b];
+    pixels[b] = tp;
   }
 
   a = 1;
   b = 3;
-  if(value[a] > value[b]) {
+  if(pixels[a]->data[0] > pixels[b]->data[0]) {
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
 
-    tv = value[a];
-    value[a] = value[b];
-    value[b] = tv;
+    tp = pixels[a];
+    pixels[a] = pixels[b];
+    pixels[b] = tp;
   }
 
   a = 0;
   b = 1;
-  if(value[a] > value[b]) {
+  if(pixels[a]->data[0] > pixels[b]->data[0]) {
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
 
-    tv = value[a];
-    value[a] = value[b];
-    value[b] = tv;
+    tp = pixels[a];
+    pixels[a] = pixels[b];
+    pixels[b] = tp;
   }
 
   a = 2;
   b = 3;
-  if(value[a] > value[b]) {
+  if(pixels[a]->data[0] > pixels[b]->data[0]) {
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
 
-    tv = value[a];
-    value[a] = value[b];
-    value[b] = tv;
+    tp = pixels[a];
+    pixels[a] = pixels[b];
+    pixels[b] = tp;
   }
 
   a = 1;
   b = 2;
-  if(value[a] > value[b]) {
+  if(pixels[a]->data[0] > pixels[b]->data[0]) {
     ti = index[a];
     index[a] = index[b];
     index[b] = ti;
 
-    tv = value[a];
-    value[a] = value[b];
-    value[b] = tv;
-  }
-
-  for(int i = 0; i < 4; i++) {
-    pixels[i] = new PixelMono(value[i]);
+    tp = pixels[a];
+    pixels[a] = pixels[b];
+    pixels[b] = tp;
   }
 }
 
