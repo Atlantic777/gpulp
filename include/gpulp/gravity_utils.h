@@ -44,8 +44,19 @@ namespace gpulp {
       void normalize_weights();
   };
 
-  // move out of here
-  PixelMono doInterpolation(InterpolationContextFloat &ctx);
+  class GravityContextFixed : public GravityContext {
+    public:
+      GravityContextFixed() {}
+      GravityContextFixed(InterpolationContextFixed &iCtx);
+
+      InterpolationContextFixed interpolationCtx;
+      std::vector<FPNum> dst;
+      std::vector<FPNum> w;
+
+      void set_gravity_distances();
+      void set_weights();
+      void normalize_weights();
+  };
 
   // float lib dependant
   // --------------------

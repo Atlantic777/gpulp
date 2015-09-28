@@ -241,14 +241,98 @@ GravityContextFloat::GravityContextFloat(InterpolationContextFloat &iCtx) {
   common_init(input);
 }
 
-PixelMono gpulp::doInterpolation(InterpolationContextFloat &iCtx) {
-  GravityContextFloat ctx(iCtx);
+GravityContextFixed::GravityContextFixed(InterpolationContextFixed &iCtx) {
+  PixelArr input;
+  input.push_back(iCtx.a);
+  input.push_back(iCtx.b);
+  input.push_back(iCtx.c);
+  input.push_back(iCtx.d);
 
-  unsigned char val;
-  val += ctx.w[0]*ctx.interpolationCtx.a->getData()[0];
-  val += ctx.w[1]*ctx.interpolationCtx.b->getData()[0];
-  val += ctx.w[2]*ctx.interpolationCtx.c->getData()[0];
-  val += ctx.w[3]*ctx.interpolationCtx.d->getData()[0];
+  interpolationCtx = iCtx;
+  common_init(input);
+}
 
-  return PixelMono(val);
+void GravityContextFixed::set_gravity_distances() {
+  FPNum one = to_fixed(1);
+  InterpolationContextFixed &ctx = interpolationCtx;
+
+  dst.clear();
+  dst.push_back(mul(ctx.dx, ctx.dx) + mul(ctx.dy, ctx.dy));
+  dst.push_back(mul(one - ctx.dx, one - ctx.dx) + mul(ctx.dy, ctx.dy));
+  dst.push_back(mul(ctx.dx, ctx.dx) + mul(one - ctx.dy, one - ctx.dy));
+  dst.push_back(mul(one - ctx.dx, one - ctx.dx) + mul(one - ctx.dy, one - ctx.dy));
+}
+
+void GravityContextFixed::set_weights() {
+  w = std::vector<FPNum>(4, 0);
+
+  if(cas == 0) {
+    if(interpolationCtx.dy < (to_fixed(0.5) - interpolationCtx.dx)) {
+      w[0] = to_fixed(1);
+    }
+    else {
+      w[1] = mul(dst[2], dst[3]);
+      w[2] = mul(dst[1], dst[3]);
+      w[3] = mul(dst[1], dst[2]);
+    }
+  }
+  else if(cas == 1) {
+    if(interpolationCtx.dy < to_fixed(0.5) - interpolationCtx.dx) {
+      w[1] = to_fixed(1);
+    }
+    else {
+      w[0] = mul(dst[2],dst[3]);
+      w[2] = mul(dst[0],dst[3]);
+      w[3] = mul(dst[0],dst[2]);
+    }
+  }
+  else if(cas == 2) {
+    if(interpolationCtx.dy > to_fixed(0.5) + interpolationCtx.dx) {
+      w[2] = to_fixed(1);
+    }
+    else {
+      w[0] = mul(dst[1],dst[3]);
+      w[1] = mul(dst[0],dst[3]);
+      w[3] = mul(dst[0],dst[1]);
+    }
+  }
+  else if(cas == 3) {
+    if(interpolationCtx.dy > to_fixed(1.5) - interpolationCtx.dx) {
+      w[3] = to_fixed(1);
+    }
+    else {
+      w[0] = mul(dst[1],dst[2]);
+      w[1] = mul(dst[0],dst[2]);
+      w[2] = mul(dst[0],dst[1]);
+    }
+  }
+  else if(cas == 5) {
+    if(interpolationCtx.dy < to_fixed(0.5)) {
+      w[0] = dst[1];
+      w[1] = dst[0];
+    }
+    else {
+      w[2] = dst[3];
+      w[3] = dst[2];
+    }
+  }
+  else if(cas == 6) {
+    if(interpolationCtx.dx < to_fixed(0.5)) {
+      w[0] = dst[2];
+      w[2] = dst[0];
+    }
+    else {
+      w[1] = dst[3];
+      w[3] = dst[1];
+    }
+  }
+  else {
+    w[0] = mul(mul(dst[1], dst[2]) ,dst[3]);
+    w[1] = mul(mul(dst[0], dst[2]), dst[3]);
+    w[2] = mul(mul(dst[0], dst[1]), dst[3]);
+    w[3] = mul(mul(dst[0], dst[1]), dst[2]);
+  }
+}
+
+void GravityContextFixed::normalize_weights() {
 }

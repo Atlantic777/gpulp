@@ -17,6 +17,19 @@ InterpolationContextFloat get_iCtx() {
   return iCtx;
 }
 
+InterpolationContextFixed get_iCtx_fixed() {
+  InterpolationContextFixed iCtx;
+  iCtx.a = new PixelMono(40);
+  iCtx.b = new PixelMono(30);
+  iCtx.c = new PixelMono(20);
+  iCtx.d = new PixelMono(10);
+
+  iCtx.dx = to_fixed(0.2);
+  iCtx.dy = to_fixed(0.4);
+
+  return iCtx;
+}
+
 TEST(GravityFloat, GetGravityDistances) {
   InterpolationContextFloat iCtx = get_iCtx();
 
@@ -293,15 +306,146 @@ TEST(GravityFloat, PrepareGravityCtx) {
   ASSERT_FLOAT_EQ(0, ctx.w[3]);
 }
 
-TEST(GravityFloat, DoInterpolation) {
-  InterpolationContextFloat iCtx;
-  iCtx.a = new PixelMono(255);
-  iCtx.b = new PixelMono(0);
-  iCtx.c = new PixelMono(0);
-  iCtx.d = new PixelMono(0);
-  iCtx.dx = 0.2;
-  iCtx.dy = 0.2;
+TEST(GravityFixed, GetGravityDistances) {
+  InterpolationContextFixed iCtx = get_iCtx_fixed();
+  GravityContextFixed ctx(iCtx);
+  float e = 0.001;
 
-  PixelMono p = doInterpolation(iCtx);
-  ASSERT_EQ(255, p.getData()[0]);
+  ASSERT_EQ(4, ctx.dst.size());
+  ASSERT_NEAR(0.04 + 0.16, from_fixed(ctx.dst[0]), e); // top left
+  ASSERT_NEAR(0.64 + 0.16, from_fixed(ctx.dst[1]), e); // top right
+  ASSERT_NEAR(0.04 + 0.36, from_fixed(ctx.dst[2]), e); // bottom left
+  ASSERT_NEAR(0.64 + 0.36, from_fixed(ctx.dst[3]), e); // bottom right
 }
+
+TEST(GravityFixed, GetWeights) {
+  GravityContextFixed ctx;
+  float e = 0.001;
+
+  ctx.cas = 0;
+  ctx.interpolationCtx.dx = to_fixed(0.2);
+  ctx.interpolationCtx.dy = to_fixed(0.1);
+
+  ctx.set_weights();
+  std::vector<FPNum> &w = ctx.w;
+  ASSERT_EQ(4, w.size());
+  ASSERT_NEAR(1, from_fixed(w[0]), e);
+  ASSERT_NEAR(0, from_fixed(w[1]), e);
+  ASSERT_NEAR(0, from_fixed(w[2]), e);
+  ASSERT_NEAR(0, from_fixed(w[3]), e);
+
+  ctx.interpolationCtx.dy = to_fixed(0.5);
+  ctx.set_gravity_distances();
+  ctx.set_weights();
+
+  ASSERT_NEAR(0, from_fixed(w[0]), e);
+  ASSERT_NEAR(0.29*0.89, from_fixed(w[1]), e);
+  ASSERT_NEAR(0.89*0.89, from_fixed(w[2]), e);
+  ASSERT_NEAR(0.89*0.29, from_fixed(w[3]), e);
+
+  ctx.cas = 1;
+  ctx.interpolationCtx.dy = to_fixed(0.1);
+  ctx.set_weights();
+  ASSERT_NEAR(0, from_fixed(w[0]), e);
+  ASSERT_NEAR(1, from_fixed(w[1]), e);
+  ASSERT_NEAR(0, from_fixed(w[2]), e);
+  ASSERT_NEAR(0, from_fixed(w[3]), e);
+
+  ctx.interpolationCtx.dy = to_fixed(0.5);
+  ctx.set_gravity_distances();
+  ctx.set_weights();
+  ASSERT_NEAR(0.29*0.89, from_fixed(w[0]), e);
+  ASSERT_NEAR(0, from_fixed(w[1]), e);
+  ASSERT_NEAR(0.29*0.89, from_fixed(w[2]), e);
+  ASSERT_NEAR(0.29*0.29, from_fixed(w[3]), e);
+
+  ctx.cas = 2;
+  ctx.interpolationCtx.dy = to_fixed(0.9);
+  ctx.set_weights();
+  ASSERT_NEAR(0, from_fixed(w[0]), e);
+  ASSERT_NEAR(0, from_fixed(w[1]), e);
+  ASSERT_NEAR(1, from_fixed(w[2]), e);
+  ASSERT_NEAR(0, from_fixed(w[3]), e);
+
+  ctx.interpolationCtx.dy = to_fixed(0.5);
+  ctx.set_gravity_distances();
+  ctx.set_weights();
+  ASSERT_NEAR(0.89*0.89, from_fixed(w[0]), e);
+  ASSERT_NEAR(0.29*0.89, from_fixed(w[1]), e);
+  ASSERT_NEAR(0, from_fixed(w[2]), e);
+  ASSERT_NEAR(0.29*0.89, from_fixed(w[3]), e);
+
+  ctx.cas = 3;
+  ctx.interpolationCtx.dx = to_fixed(1);
+  ctx.interpolationCtx.dy = to_fixed(0.7);
+  ctx.set_weights();
+  ASSERT_NEAR(0, from_fixed(w[0]), e);
+  ASSERT_NEAR(0, from_fixed(w[1]), e);
+  ASSERT_NEAR(0, from_fixed(w[2]), e);
+  ASSERT_NEAR(1, from_fixed(w[3]), e);
+
+  ctx.interpolationCtx.dx = to_fixed(0.2);
+  ctx.interpolationCtx.dy = to_fixed(0.5);
+  ctx.set_gravity_distances();
+  ctx.set_weights();
+  ASSERT_NEAR(0.89*0.29, from_fixed(w[0]), e);
+  ASSERT_NEAR(0.29*0.29, from_fixed(w[1]), e);
+  ASSERT_NEAR(0.29*0.89, from_fixed(w[2]), e);
+  ASSERT_NEAR(0, from_fixed(w[3]), e);
+
+  ctx.cas = 5;
+  ctx.interpolationCtx.dy = to_fixed(0.2);
+  ctx.set_gravity_distances();
+  ctx.set_weights();
+  ASSERT_NEAR(0.68, from_fixed(w[0]), e);
+  ASSERT_NEAR(0.08, from_fixed(w[1]), e);
+  ASSERT_NEAR(0, from_fixed(w[2]), e);
+  ASSERT_NEAR(0, from_fixed(w[3]), e);
+
+  ctx.interpolationCtx.dy = to_fixed(0.8);
+  ctx.set_gravity_distances();
+  ctx.set_weights();
+  ASSERT_NEAR(0, from_fixed(w[0]), e);
+  ASSERT_NEAR(0, from_fixed(w[1]), e);
+  ASSERT_NEAR(0.68, from_fixed(w[2]), e);
+  ASSERT_NEAR(0.08, from_fixed(w[3]), e);
+
+  ctx.cas = 6;
+  ctx.interpolationCtx.dx = to_fixed(0.2);
+  ctx.interpolationCtx.dy = to_fixed(0.5);
+  ctx.set_gravity_distances();
+  ctx.set_weights();
+  ASSERT_NEAR(0.29, from_fixed(w[0]), e);
+  ASSERT_NEAR(0, from_fixed(w[1]), e);
+  ASSERT_NEAR(0.29, from_fixed(w[2]), e);
+  ASSERT_NEAR(0, from_fixed(w[3]), e);
+
+  ctx.interpolationCtx.dx = to_fixed(0.8);
+  ctx.set_gravity_distances();
+  ctx.set_weights();
+  ASSERT_NEAR(0, from_fixed(w[0]), e);
+  ASSERT_NEAR(0.29, from_fixed(w[1]), e);
+  ASSERT_NEAR(0, from_fixed(w[2]), e);
+  ASSERT_NEAR(0.29, from_fixed(w[3]), e);
+
+  ctx.cas = 7;
+  ctx.set_weights();
+  ASSERT_NEAR(0.29*0.89*0.29, from_fixed(w[0]), e);
+  ASSERT_NEAR(0.89*0.89*0.29, from_fixed(w[1]), e);
+  ASSERT_NEAR(0.89*0.29*0.29, from_fixed(w[2]), e);
+  ASSERT_NEAR(0.89*0.29*0.89, from_fixed(w[3]), e);
+}
+
+// TODO: move this test to proper place
+// TEST(GravityFloat, DoInterpolation) {
+//   InterpolationContextFloat iCtx;
+//   iCtx.a = new PixelMono(255);
+//   iCtx.b = new PixelMono(0);
+//   iCtx.c = new PixelMono(0);
+//   iCtx.d = new PixelMono(0);
+//   iCtx.dx = 0.2;
+//   iCtx.dy = 0.2;
+//
+//   PixelMono p = doInterpolation(iCtx);
+//   ASSERT_EQ(255, p.getData()[0]);
+// }

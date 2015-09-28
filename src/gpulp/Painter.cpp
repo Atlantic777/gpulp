@@ -161,10 +161,16 @@ PixelMono PainterBilinearFloat::interpolate(Location l, FrameBuffer &fb, GUIObje
 }
 
 PixelMono PainterGravityFloat::interpolate(Location l, FrameBuffer &fb, GUIObject obj) {
-  InterpolationContextFloat ctx = getInterpolationContext(l, fb, obj);
-  PixelMono p = doInterpolation(ctx);
+  InterpolationContextFloat iCtx = getInterpolationContext(l, fb, obj);
+  GravityContextFloat ctx(iCtx);
 
-  return p;
+  unsigned char val;
+  val += ctx.w[0]*ctx.interpolationCtx.a->getData()[0];
+  val += ctx.w[1]*ctx.interpolationCtx.b->getData()[0];
+  val += ctx.w[2]*ctx.interpolationCtx.c->getData()[0];
+  val += ctx.w[3]*ctx.interpolationCtx.d->getData()[0];
+
+  return PixelMono(val);
 }
 PixelMono PainterGravityFixed::interpolate(Location l, FrameBuffer &fb, GUIObject obj) {
   InterpolationContextFixed ctx = getInterpolationContext(l, fb, obj);
