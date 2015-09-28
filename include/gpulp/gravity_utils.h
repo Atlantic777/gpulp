@@ -3,28 +3,24 @@
 
 #include "gpulp/gpulp_utils.h"
 #include "gpulp/InterpolationContext.h"
-#include <vector>
+// #include <vector>
 #include "gpulp/fixed_point.h"
 
 namespace gpulp {
-  typedef std::vector<Pixel*> PixelArr;
-
   class GravityContext {
   public:
     int Dmax; // value of max diff
     int Kmax; // idx of max diff
     int Nmax[4]; // sorted indexes
     int cas;
-    PixelArr sorted;
-    std::vector<unsigned char> diffs;
+    Pixel* pixels[4];
+    unsigned char diffs[3];
 
-    void pixel_pair_sort(PixelArr &pixels);
+    void pixel_pair_sort();
     int get_choice_of_case();
-    PixelArr sort_pixels(PixelArr &input);
-    std::vector<int> arg_sort_pixels(PixelArr &input);
-    std::vector<unsigned char> diff_pixels(PixelArr &pixels);
-    void maximum_jump(std::vector<unsigned char> &diffs);
-    void common_init(PixelArr &input);
+    void diff_pixels();
+    void maximum_jump();
+    void common_init();
 
     virtual void set_gravity_distances() = 0;
     virtual void set_weights() = 0;
@@ -37,8 +33,8 @@ namespace gpulp {
       GravityContextFloat(InterpolationContextFloat &iCtx);
 
       InterpolationContextFloat interpolationCtx;
-      std::vector<float> dst;
-      std::vector<float> w;
+      float dst[4];
+      float w[4];
 
       void set_gravity_distances();
       void set_weights();
@@ -51,22 +47,13 @@ namespace gpulp {
       GravityContextFixed(InterpolationContextFixed &iCtx);
 
       InterpolationContextFixed interpolationCtx;
-      std::vector<FPNum> dst;
-      std::vector<FPNum> w;
+      FPNum dst[4];
+      FPNum w[4];
 
       void set_gravity_distances();
       void set_weights();
       void normalize_weights();
   };
-
-  // float lib dependant
-  // --------------------
-  // get_gravity_distances
-  // get_weights
-  // normalize_weigths - division, important!
-  //
-  // of course, doInterpolation() too
-  // std::vector<FPNum> get_gravity_distances(InterpolationContextFixed &ctx);
 }
 
 #endif

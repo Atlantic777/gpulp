@@ -3,17 +3,13 @@
 #include <cmath>
 
 using namespace gpulp;
-typedef std::pair<Pixel*, int> PixelPair;
-typedef std::vector<PixelPair> PixelPairArr;
 
-void GravityContext::common_init(PixelArr &input) {
+void GravityContext::common_init() {
   set_gravity_distances();
 
-  pixel_pair_sort(input);
-  // Nmax = arg_sort_pixels(input);
-  // sorted = sort_pixels(input);
-  diffs = diff_pixels(sorted);
-  maximum_jump(diffs);
+  pixel_pair_sort();
+  diff_pixels();
+  maximum_jump();
 
   cas = get_choice_of_case();
 
@@ -21,7 +17,7 @@ void GravityContext::common_init(PixelArr &input) {
   normalize_weights();
 }
 
-void GravityContext::pixel_pair_sort(PixelArr &pixels){
+void GravityContext::pixel_pair_sort(){
   int *index = Nmax;
   unsigned char value[4];
 
@@ -94,59 +90,29 @@ void GravityContext::pixel_pair_sort(PixelArr &pixels){
     value[b] = tv;
   }
 
-  sorted.clear();
   for(int i = 0; i < 4; i++) {
-    sorted.push_back(pixels[index[i]]);
+    pixels[i] = new PixelMono(value[i]);
   }
-
-  // return index;
-}
-
-PixelArr GravityContext::sort_pixels(PixelArr &input) {
-  std::vector<Pixel*> parr;
-  // PixelPairArr pairs = pixel_pair_sort(input);
-  //
-  // for(int i = 0; i < 4; i++) {
-  //   parr.push_back(pairs[i].first);
-  // }
-
-  return parr;
-}
-
-std::vector<int> GravityContext::arg_sort_pixels(PixelArr &input) {
-  std::vector<int> args;
-  // PixelPairArr pairs = pixel_pair_sort(input);
-  //
-  // for(int i = 0; i < 4; i++) {
-  //   args.push_back(pairs[i].second);
-  // }
-
-  return args;
 }
 
 void GravityContextFloat::set_gravity_distances() {
   InterpolationContextFloat &ctx = interpolationCtx;
 
-  dst.clear();
-  dst.push_back(pow(ctx.dx, 2) + pow(ctx.dy, 2));
-  dst.push_back(pow(1-ctx.dx, 2) + pow(ctx.dy, 2));
-  dst.push_back(pow(ctx.dx, 2) + pow(1-ctx.dy, 2));
-  dst.push_back(pow(1-ctx.dx, 2) + pow(1-ctx.dy, 2));
+  dst[0] = pow(ctx.dx, 2) + pow(ctx.dy, 2);
+  dst[1] = pow(1-ctx.dx, 2) + pow(ctx.dy, 2);
+  dst[2] = pow(ctx.dx, 2) + pow(1-ctx.dy, 2);
+  dst[3] = pow(1-ctx.dx, 2) + pow(1-ctx.dy, 2);
 }
 
-std::vector<unsigned char> GravityContext::diff_pixels(PixelArr &pixels) {
-  std::vector<unsigned char> diffs;
+void GravityContext::diff_pixels() {
   unsigned char tmp;
 
   for(int i = 0; i < 3; i++) {
-    tmp = abs(pixels[i+1]->getData()[0] - pixels[i]->getData()[0]);
-    diffs.push_back(tmp);
+    diffs[i] = abs(pixels[i+1]->getData()[0] - pixels[i]->getData()[0]);
   }
-
-  return diffs;
 }
 
-void GravityContext::maximum_jump(std::vector<unsigned char> &diffs)  {
+void GravityContext::maximum_jump()  {
   Dmax = -1;
   Kmax = -1;
 
@@ -186,7 +152,6 @@ int GravityContext::get_choice_of_case() {
 }
 
 void GravityContextFloat::set_weights() {
-  w = std::vector<float>(4, 0);
   if(cas == 0) {
     if(interpolationCtx.dy < (0.5 - interpolationCtx.dx)) {
       w[0] = 1;
@@ -267,41 +232,34 @@ void GravityContextFloat::normalize_weights() {
 }
 
 GravityContextFloat::GravityContextFloat(InterpolationContextFloat &iCtx) {
-  PixelArr input;
-  input.push_back(iCtx.a);
-  input.push_back(iCtx.b);
-  input.push_back(iCtx.c);
-  input.push_back(iCtx.d);
-
   interpolationCtx = iCtx;
-  common_init(input);
+  pixels[0] = iCtx.a;
+  pixels[1] = iCtx.b;
+  pixels[2] = iCtx.c;
+  pixels[3] = iCtx.d;
+  common_init();
 }
 
 GravityContextFixed::GravityContextFixed(InterpolationContextFixed &iCtx) {
-  PixelArr input;
-  input.push_back(iCtx.a);
-  input.push_back(iCtx.b);
-  input.push_back(iCtx.c);
-  input.push_back(iCtx.d);
-
   interpolationCtx = iCtx;
-  common_init(input);
+  pixels[0] = iCtx.a;
+  pixels[1] = iCtx.b;
+  pixels[2] = iCtx.c;
+  pixels[3] = iCtx.d;
+  common_init();
 }
 
 void GravityContextFixed::set_gravity_distances() {
   FPNum one = to_fixed(1);
   InterpolationContextFixed &ctx = interpolationCtx;
 
-  dst.clear();
-  dst.push_back(mul(ctx.dx, ctx.dx) + mul(ctx.dy, ctx.dy));
-  dst.push_back(mul(one - ctx.dx, one - ctx.dx) + mul(ctx.dy, ctx.dy));
-  dst.push_back(mul(ctx.dx, ctx.dx) + mul(one - ctx.dy, one - ctx.dy));
-  dst.push_back(mul(one - ctx.dx, one - ctx.dx) + mul(one - ctx.dy, one - ctx.dy));
+  dst[0] = mul(ctx.dx, ctx.dx) + mul(ctx.dy, ctx.dy);
+  dst[1] = mul(one - ctx.dx, one - ctx.dx) + mul(ctx.dy, ctx.dy);
+  dst[2] = mul(ctx.dx, ctx.dx) + mul(one - ctx.dy, one - ctx.dy);
+  dst[3] = mul(one - ctx.dx, one - ctx.dx) + mul(one - ctx.dy, one - ctx.dy);
 }
 
 void GravityContextFixed::set_weights() {
-  w = std::vector<FPNum>(4, 0);
-
   if(cas == 0) {
     if(interpolationCtx.dy < (to_fixed(0.5) - interpolationCtx.dx)) {
       w[0] = to_fixed(1);
