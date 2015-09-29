@@ -11,44 +11,44 @@ namespace gpulp {
 
 class Painter {
   public:
-    void render(FrameBuffer &fb, GUIObject obj);
-    void blit(FrameBuffer &fb, GUIObject obj);
-    void stretchBlit(FrameBuffer &fb, GUIObject obj);
+    void render(FrameBuffer &fb, const GUIObject &obj);
+    void blit(FrameBuffer &fb, const GUIObject &obj);
+    void stretchBlit(FrameBuffer &fb, const GUIObject &obj);
 
   private:
-    virtual PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj) = 0;
+    virtual PixelMono interpolate(Location l, const FrameBuffer &fb, const GUIObject &obj) = 0;
 };
 
 class PainterFixed {
   public:
     InterpolationContextFixed getInterpolationContext(Location l,
-        FrameBuffer &fb, GUIObject &obj);
+        const FrameBuffer &fb, const GUIObject &obj);
 };
 
 class PainterFloat {
   public:
     InterpolationContextFloat getInterpolationContext(Location l,
-        FrameBuffer &fb, GUIObject &obj);
+        const FrameBuffer &fb, const GUIObject &obj);
 };
 
 class PainterBilinearFloat : public Painter, public PainterFloat {
   private:
-    PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj);
+    PixelMono interpolate(Location l, const FrameBuffer &fb, const GUIObject &obj);
 };
 
 class PainterBilinearFixed : public Painter, public PainterFixed {
   private:
-    PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj);
+    PixelMono interpolate(Location l, const FrameBuffer &fb, const GUIObject &obj);
 };
 
 class PainterGravityFloat : public Painter, public PainterFloat {
   private:
-    PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj);
+    PixelMono interpolate(Location l, const FrameBuffer &fb, const GUIObject &obj);
 };
 
 class PainterGravityFixed : public Painter, public PainterFixed {
   private:
-    PixelMono interpolate(Location l, FrameBuffer &fb, GUIObject obj);
+    PixelMono interpolate(Location l, const FrameBuffer &fb, const GUIObject &obj);
 };
 
 }

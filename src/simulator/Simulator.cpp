@@ -35,6 +35,6 @@ FrameBuffer* Simulator::render() {
   return fb;
 }
 
-void Simulator::renderOne(GUIObject obj) {
+void Simulator::renderOne(const GUIObject &obj) {
   p->render(*fb, obj);
 }

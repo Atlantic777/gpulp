@@ -34,8 +34,8 @@ struct Size {
     Size(int w, int h) {width = w; height = h;}
     Size() {}
 
-    bool operator==(Size &other) {
-      return this->width == other.width && this->height == other.height;
+    bool operator==(const Size &other) const {
+      return (this->width == other.width) && (this->height == other.height);
     }
 };
 

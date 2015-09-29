@@ -16,7 +16,7 @@ class Simulator {
   private:
     Scene *scene;
     FrameBuffer *fb;
-    void renderOne(GUIObject obj);
+    void renderOne(const GUIObject &obj);
     Painter *p;
     std::string algorithm;
     std::string mathlib;

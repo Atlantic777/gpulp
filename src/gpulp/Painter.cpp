@@ -7,7 +7,7 @@
 using namespace gpulp;
 using namespace std;
 
-void Painter::render(FrameBuffer &fb, GUIObject obj) {
+void Painter::render(FrameBuffer &fb, const GUIObject &obj) {
   if(obj.size == obj.texture.size) {
     blit(fb, obj);
   }
@@ -16,7 +16,7 @@ void Painter::render(FrameBuffer &fb, GUIObject obj) {
   }
 }
 
-void Painter::blit(FrameBuffer &fb, GUIObject obj) {
+void Painter::blit(FrameBuffer &fb, const GUIObject &obj) {
   int width  = obj.texture.size.width;
   int height = obj.texture.size.height;
 
@@ -32,7 +32,7 @@ void Painter::blit(FrameBuffer &fb, GUIObject obj) {
   }
 }
 
-void Painter::stretchBlit(FrameBuffer &fb, GUIObject obj) {
+void Painter::stretchBlit(FrameBuffer &fb, const GUIObject &obj) {
   for(int col = 0; col < obj.size.width; col++) {
     for(int row = 0; row < obj.size.height; row++) {
       PixelMono p = interpolate(Location(col, row), fb, obj);
@@ -42,7 +42,7 @@ void Painter::stretchBlit(FrameBuffer &fb, GUIObject obj) {
 }
 
 InterpolationContextFloat PainterFloat::getInterpolationContext(Location l,
-    FrameBuffer &fb, GUIObject &obj) {
+    const FrameBuffer &fb, const GUIObject &obj) {
   InterpolationContextFloat ctx;
 
   int w = obj.texture.size.width;
@@ -80,7 +80,7 @@ InterpolationContextFloat PainterFloat::getInterpolationContext(Location l,
 }
 
 InterpolationContextFixed PainterFixed::getInterpolationContext(Location l,
-    FrameBuffer &fb, GUIObject &obj) {
+    const FrameBuffer &fb, const GUIObject &obj) {
   InterpolationContextFixed ctx;
 
   int w = obj.texture.size.width;
@@ -120,7 +120,8 @@ InterpolationContextFixed PainterFixed::getInterpolationContext(Location l,
   return ctx;
 }
 
-PixelMono PainterBilinearFixed::interpolate(Location l, FrameBuffer &fb, GUIObject obj) {
+PixelMono PainterBilinearFixed::interpolate(Location l,
+    const FrameBuffer &fb, const GUIObject &obj) {
   InterpolationContextFixed ctx = getInterpolationContext(l, fb, obj);
 
   FPNum a_val = to_fixed(ctx.a->getData()[0]);
@@ -142,45 +143,46 @@ PixelMono PainterBilinearFixed::interpolate(Location l, FrameBuffer &fb, GUIObje
   return p;
 }
 
-PixelMono PainterBilinearFloat::interpolate(Location l, FrameBuffer &fb, GUIObject obj) {
+PixelMono PainterBilinearFloat::interpolate(Location l,
+    const FrameBuffer &fb, const GUIObject &obj) {
   InterpolationContextFloat ctx = getInterpolationContext(l, fb, obj);
 
-  PixelMono q1(
-    ctx.a->getData()[0]*(1-ctx.dx) +
-    ctx.b->getData()[0]*(ctx.dx));
+  unsigned char q1 =
+    ctx.a->data[0]*(1-ctx.dx) +
+    ctx.b->data[0]*(ctx.dx);
 
-  PixelMono q2(
-    ctx.c->getData()[0]*(1-ctx.dx) +
-    ctx.d->getData()[0]*(ctx.dx));
+  unsigned char q2 =
+    ctx.c->data[0]*(1-ctx.dx) +
+    ctx.d->data[0]*(ctx.dx);
 
-  PixelMono p(
-      q1.getData()[0]*(1-ctx.dy) +
-      q2.getData()[0]*ctx.dy);
+  PixelMono p( q1*(1-ctx.dy) + q2*ctx.dy);
 
   return p;
 }
 
-PixelMono PainterGravityFloat::interpolate(Location l, FrameBuffer &fb, GUIObject obj) {
+PixelMono PainterGravityFloat::interpolate(Location l,
+    const FrameBuffer &fb, const GUIObject &obj) {
   InterpolationContextFloat iCtx = getInterpolationContext(l, fb, obj);
   GravityContextFloat ctx(iCtx);
 
   unsigned char val;
-  val += ctx.w[0]*ctx.interpolationCtx.a->getData()[0];
-  val += ctx.w[1]*ctx.interpolationCtx.b->getData()[0];
-  val += ctx.w[2]*ctx.interpolationCtx.c->getData()[0];
-  val += ctx.w[3]*ctx.interpolationCtx.d->getData()[0];
+  val += ctx.w[0]*ctx.interpolationCtx.a->data[0];
+  val += ctx.w[1]*ctx.interpolationCtx.b->data[0];
+  val += ctx.w[2]*ctx.interpolationCtx.c->data[0];
+  val += ctx.w[3]*ctx.interpolationCtx.d->data[0];
 
   return PixelMono(val);
 }
-PixelMono PainterGravityFixed::interpolate(Location l, FrameBuffer &fb, GUIObject obj) {
+PixelMono PainterGravityFixed::interpolate(Location l,
+    const FrameBuffer &fb, const GUIObject &obj) {
   InterpolationContextFixed iCtx = getInterpolationContext(l, fb, obj);
   GravityContextFixed ctx(iCtx);
 
   FPNum val;
-  val += mul(ctx.w[0], to_fixed(ctx.interpolationCtx.a->getData()[0]));
-  val += mul(ctx.w[1], to_fixed(ctx.interpolationCtx.b->getData()[0]));
-  val += mul(ctx.w[2], to_fixed(ctx.interpolationCtx.c->getData()[0]));
-  val += mul(ctx.w[3], to_fixed(ctx.interpolationCtx.d->getData()[0]));
+  val += mul(ctx.w[0], to_fixed(ctx.interpolationCtx.a->data[0]));
+  val += mul(ctx.w[1], to_fixed(ctx.interpolationCtx.b->data[0]));
+  val += mul(ctx.w[2], to_fixed(ctx.interpolationCtx.c->data[0]));
+  val += mul(ctx.w[3], to_fixed(ctx.interpolationCtx.d->data[0]));
 
   return PixelMono(from_fixed(val));
 }
